@@ -78,3 +78,13 @@
   margin-top: auto;
   padding: 10px 20px;
 }
+
+.bottom_routes {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.sublink {
+  padding-left: 2rem; /* indent for submenu */
+}

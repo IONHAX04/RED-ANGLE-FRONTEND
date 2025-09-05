@@ -12,12 +12,16 @@ import {
   LogOut,
 } from "lucide-react";
 
+import { Accordion, AccordionTab } from "primereact/accordion";
+
 import "./Header.css";
 
 interface Route {
-  path: string;
+  path?: string;
   name: string;
   icon: any;
+  subRoutes?: Route[];
+  isBottom?: boolean; // To mark settings/logout for bottom alignment
 }
 
 interface NavProps {
@@ -26,10 +30,21 @@ interface NavProps {
 
 const routes: Route[] = [
   { path: "/", name: "Dashboard", icon: <LayoutDashboard /> },
-  { path: "/employee", name: "Employee", icon: <User /> },
-  { path: "/manage", name: "Manage Access", icon: <Repeat /> },
-  { path: "/settings", name: "Settings", icon: <Settings /> },
-  { path: "/logout", name: "Logout", icon: <LogOut /> },
+  {
+    path: "/employee",
+    name: "Leads",
+    icon: <User />,
+  },
+  {
+    name: "Manage",
+    icon: <Repeat />,
+    subRoutes: [
+      { path: "/manage/assign", name: "Assign Leads", icon: <Repeat /> },
+      { path: "/manage/view", name: "View Leads", icon: <Repeat /> },
+    ],
+  },
+  { path: "/settings", name: "Settings", icon: <Settings />, isBottom: true },
+  { path: "/logout", name: "Logout", icon: <LogOut />, isBottom: true },
 ];
 
 const showAnimation: Variants = {
@@ -70,31 +85,76 @@ const Header = ({ children }: NavProps) => {
         </div>
 
         <section className="routes">
-          {routes.map((route) => (
-            <NavLink
-              to={route.path}
-              key={route.name}
-              className="link"
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? "#e0e0e0" : "transparent",
-              })}
-            >
-              <div className="icon">{route.icon}</div>
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    className="link_text"
-                    variants={showAnimation}
-                    initial="hidden"
-                    animate="show"
-                    exit="hidden"
+          {/* Top Routes */}
+          {routes
+            .filter((r) => !r.isBottom)
+            .map((route) =>
+              route.subRoutes ? (
+                <Accordion
+                  key={route.name}
+                  multiple
+                  className="submenu-accordion"
+                >
+                  <AccordionTab
+                    header={
+                      <div className="link">
+                        <div className="icon">{route.icon}</div>
+                        {isOpen && (
+                          <span className="link_text">{route.name}</span>
+                        )}
+                      </div>
+                    }
                   >
-                    {route.name}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </NavLink>
-          ))}
+                    {route.subRoutes.map((sub) => (
+                      <NavLink
+                        key={sub.name}
+                        to={sub.path!}
+                        className="link sublink"
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? "#d0d0d0" : "transparent",
+                        })}
+                      >
+                        <div className="icon">{sub.icon}</div>
+                        {isOpen && (
+                          <span className="link_text">{sub.name}</span>
+                        )}
+                      </NavLink>
+                    ))}
+                  </AccordionTab>
+                </Accordion>
+              ) : (
+                <NavLink
+                  key={route.name}
+                  to={route.path!}
+                  className="link"
+                  style={({ isActive }) => ({
+                    // backgroundColor: isActive ? "#e0e0e0" : "transparent",
+                  })}
+                >
+                  <div className="icon">{route.icon}</div>
+                  {isOpen && <span className="link_text">{route.name}</span>}
+                </NavLink>
+              )
+            )}
+
+          {/* Bottom Routes */}
+          <div className="bottom_routes">
+            {routes
+              .filter((r) => r.isBottom)
+              .map((route) => (
+                <NavLink
+                  key={route.name}
+                  to={route.path!}
+                  className="link"
+                  style={({ isActive }) => ({
+                    backgroundColor: isActive ? "#e0e0e0" : "transparent",
+                  })}
+                >
+                  <div className="icon">{route.icon}</div>
+                  {isOpen && <span className="link_text">{route.name}</span>}
+                </NavLink>
+              ))}
+          </div>
         </section>
       </motion.div>
 
