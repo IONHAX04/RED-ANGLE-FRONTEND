@@ -1,7 +1,6 @@
 import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
-
-import React from "react";
+import React, { useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
@@ -25,84 +24,145 @@ const AddNewLeads: React.FC = () => {
     { label: "Other", value: "other" },
   ];
 
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobile: "",
+    secondaryMobile: "",
+    eventType: "",
+    leadSource: "",
+    budget: "",
+    eventDate: null as Date | null,
+    advance: "",
+    paymentDate: null as Date | null,
+    notes: "",
+  });
+
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSave = () => {
+    console.log("Payload:", formData);
+  };
+
+  const handleClear = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+      secondaryMobile: "",
+      eventType: "",
+      leadSource: "",
+      budget: "",
+      eventDate: null,
+      advance: "",
+      paymentDate: null,
+      notes: "",
+    });
+  };
+
   return (
     <div className="p-3">
       <p className="uppercase font-bold underline text-lg">Add New Lead</p>
       <div className="p-3 shadow-lg rounded-lg">
+        {/* Basic Details */}
         <p className="underline uppercase font-semibold text-md">
           Basic Details
         </p>
         <div className="flex gap-3">
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">First Name</label>
+            <label>First Name</label>
             <InputText
               type="text"
               className="p-inputtext-sm"
               placeholder="Enter First Name"
+              value={formData.firstName}
+              onChange={(e) => handleChange("firstName", e.target.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Last Name</label>
+            <label>Last Name</label>
             <InputText
               type="text"
               className="p-inputtext-sm"
               placeholder="Enter Last Name"
+              value={formData.lastName}
+              onChange={(e) => handleChange("lastName", e.target.value)}
             />
-          </div>{" "}
+          </div>
           <div className="flex-1"></div>
         </div>
+
         <Divider />
+
+        {/* Communication Details */}
         <p className="mt-2 underline uppercase font-semibold text-md">
           Communication Details
         </p>
         <div className="flex gap-3">
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Email</label>
+            <label>Email</label>
             <InputText
               type="text"
               className="p-inputtext-sm"
               placeholder="Enter Email"
+              value={formData.email}
+              onChange={(e) => handleChange("email", e.target.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Mobile</label>
+            <label>Mobile</label>
             <InputMask
-              type="text"
               className="p-inputtext-sm"
               mask="999-999-9999"
               placeholder="Enter Mobile"
+              value={formData.mobile}
+              onChange={(e) => handleChange("mobile", e.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Secondary Mobile</label>
+            <label>Secondary Mobile</label>
             <InputMask
-              type="text"
               className="p-inputtext-sm"
               mask="999-999-9999"
               placeholder="Enter Secondary Mobile"
+              value={formData.secondaryMobile}
+              onChange={(e) => handleChange("secondaryMobile", e.value)}
             />
           </div>
         </div>
+
         <Divider />
 
+        {/* Event Details */}
         <p className="mt-2 underline uppercase font-semibold text-md">
           Event Details
         </p>
         <div className="flex gap-3">
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Event Type</label>
+            <label>Event Type</label>
             <Dropdown
               options={eventTypes}
               placeholder="Select Event Type"
               className="p-inputtext-sm"
+              value={formData.eventType}
+              onChange={(e) => handleChange("eventType", e.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
-            <label htmlFor="username">Lead Source</label>
+            <label>Lead Source</label>
             <Dropdown
               options={leadSources}
               placeholder="Select Lead Source"
               className="p-inputtext-sm"
+              value={formData.leadSource}
+              onChange={(e) => handleChange("leadSource", e.value)}
             />
           </div>
         </div>
@@ -114,6 +174,8 @@ const AddNewLeads: React.FC = () => {
               type="number"
               placeholder="Enter Budget"
               className="p-inputtext-sm"
+              value={formData.budget}
+              onChange={(e) => handleChange("budget", e.target.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
@@ -121,12 +183,15 @@ const AddNewLeads: React.FC = () => {
             <Calendar
               placeholder="Choose Event Date"
               className="p-inputtext-sm"
+              value={formData.eventDate}
+              onChange={(e) => handleChange("eventDate", e.value)}
             />
           </div>
         </div>
 
         <Divider />
 
+        {/* Advance Details */}
         <p className="mt-2 underline uppercase font-semibold text-md">
           Advance Details
         </p>
@@ -137,6 +202,8 @@ const AddNewLeads: React.FC = () => {
               type="number"
               placeholder="Enter Advance"
               className="p-inputtext-sm"
+              value={formData.advance}
+              onChange={(e) => handleChange("advance", e.target.value)}
             />
           </div>
           <div className="flex flex-1 flex-column gap-2">
@@ -144,29 +211,39 @@ const AddNewLeads: React.FC = () => {
             <Calendar
               placeholder="Amount Given Date"
               className="p-inputtext-sm"
+              value={formData.paymentDate}
+              onChange={(e) => handleChange("paymentDate", e.value)}
             />
           </div>
         </div>
 
         <Divider />
 
+        {/* Notes */}
         <p className="mt-2 underline uppercase font-semibold text-md">
           Other Important Notes
-          <Editor
-            // value={text}
-            // onTextChange={(e: EditorTextChangeEvent) => setText(e.htmlValue)}
-            style={{ height: "320px" }}
-          />
         </p>
+        <Editor
+          value={formData.notes}
+          onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
+          style={{ height: "320px" }}
+        />
 
+        {/* Actions */}
         <div className="buttonActions gap-3 flex mt-3 justify-end">
           <Button
             icon="pi pi-times"
             label="Clear"
             outlined
             className="w-[10rem]"
+            onClick={handleClear}
           />
-          <Button icon="pi pi-save" label="Save Lead" className="w-[10rem]" />
+          <Button
+            icon="pi pi-save"
+            label="Save Lead"
+            className="w-[10rem]"
+            onClick={handleSave}
+          />
         </div>
       </div>
     </div>
