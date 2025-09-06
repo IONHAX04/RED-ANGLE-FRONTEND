@@ -9,6 +9,8 @@ const MainRoutes: React.FC = () => {
       <Header>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+
         </Routes>
       </Header>
     </div>
