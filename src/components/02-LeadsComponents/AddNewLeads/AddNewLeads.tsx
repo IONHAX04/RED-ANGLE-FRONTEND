@@ -5,6 +5,8 @@ import React from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { Divider } from "primereact/divider";
 
 const AddNewLeads: React.FC = () => {
   const eventTypes = [
@@ -24,7 +26,7 @@ const AddNewLeads: React.FC = () => {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-3">
       <p className="uppercase font-bold underline text-lg">Add New Lead</p>
       <div className="p-3 shadow-lg rounded-lg">
         <p className="underline uppercase font-semibold text-md">
@@ -49,6 +51,7 @@ const AddNewLeads: React.FC = () => {
           </div>{" "}
           <div className="flex-1"></div>
         </div>
+        <Divider />
         <p className="mt-2 underline uppercase font-semibold text-md">
           Communication Details
         </p>
@@ -80,6 +83,8 @@ const AddNewLeads: React.FC = () => {
             />
           </div>
         </div>
+        <Divider />
+
         <p className="mt-2 underline uppercase font-semibold text-md">
           Event Details
         </p>
@@ -100,7 +105,9 @@ const AddNewLeads: React.FC = () => {
               className="p-inputtext-sm"
             />
           </div>
+        </div>
 
+        <div className="flex gap-3 mt-3">
           <div className="flex flex-1 flex-column gap-2">
             <label>Budget (Optional)</label>
             <InputText
@@ -109,7 +116,39 @@ const AddNewLeads: React.FC = () => {
               className="p-inputtext-sm"
             />
           </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Event Date</label>
+            <Calendar
+              placeholder="Choose Event Date"
+              className="p-inputtext-sm"
+            />
+          </div>
         </div>
+
+        <Divider />
+
+        <p className="mt-2 underline uppercase font-semibold text-md">
+          Advance Details
+        </p>
+        <div className="flex gap-3">
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Advance Payment</label>
+            <InputText
+              type="number"
+              placeholder="Enter Advance"
+              className="p-inputtext-sm"
+            />
+          </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Payment Date</label>
+            <Calendar
+              placeholder="Amount Given Date"
+              className="p-inputtext-sm"
+            />
+          </div>
+        </div>
+
+        <Divider />
 
         <p className="mt-2 underline uppercase font-semibold text-md">
           Other Important Notes
