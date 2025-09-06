@@ -80,11 +80,11 @@ const Header = ({ children }: NavProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex relative lg:static surface-ground">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div
         id="app-sidebar"
-        className="surface-section h-screen block flex-shrink-0 absolute lg:static left-0 top-0 z-10 shadow-xl select-none"
+        className="surface-section h-full flex-shrink-0 shadow-xl select-none"
         style={{ width: "280px" }}
       >
         <div className="flex flex-col h-full">
@@ -195,7 +195,12 @@ const Header = ({ children }: NavProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="w-[100%]">{children}</div>
+      <div
+        className="w-[100%] overflow-auto"
+        style={{ scrollbarWidth: "thin" }}
+      >
+        {children}
+      </div>
     </div>
   );
 };

@@ -10,6 +10,7 @@ body {
 }
 
 .p-inputtext,
+.p-button,
 .p-dropdown,
 .p-multiselect,
 .p-calendar,
@@ -20,6 +21,7 @@ body {
 }
 
 .p-inputtext:focus,
+.p-button,
 .p-dropdown:focus,
 .p-multiselect:focus,
 .p-calendar:focus,
