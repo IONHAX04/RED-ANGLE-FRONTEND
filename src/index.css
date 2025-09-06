@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 body {
   margin: 0;
   padding: 0;
@@ -8,4 +7,24 @@ body {
 
 * {
   font-family: "Open Sans", sans-serif;
+}
+
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar,
+.p-password,
+.p-inputtextarea {
+  /* border-radius: 0 !important; */
+  box-shadow: none !important;
+}
+
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-multiselect:focus,
+.p-calendar:focus,
+.p-password:focus,
+.p-inputtextarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
