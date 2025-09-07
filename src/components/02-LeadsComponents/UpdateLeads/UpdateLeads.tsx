@@ -59,7 +59,8 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
             <Calendar
               className="p-inputtext-sm"
               placeholder="Choose Next Date & Time"
-
+              showTime
+              hourFormat="24"
               // value={formData.firstName}
               // onChange={(e) => handleChange("firstName", e.target.value)}
             />
@@ -103,7 +104,7 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
           />
           <Button
             icon="pi pi-save"
-            label="Update Lead"
+            label="Update"
             className="w-[10rem]"
             // onClick={handleSave}
           />
