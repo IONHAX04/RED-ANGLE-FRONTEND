@@ -71,7 +71,7 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
           <Editor
             // value={formData.notes}
             // onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-            style={{ height: "320px" }}
+            style={{ height: "220px" }}
             placeholder="Brief overview of the interaction"
           />
         </div>
@@ -80,7 +80,7 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
           <Editor
             // value={formData.notes}
             // onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-            style={{ height: "320px" }}
+            style={{ height: "220px" }}
             placeholder="Agenda Overview"
           />
         </div>
@@ -89,7 +89,7 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
           <Editor
             // value={formData.notes}
             // onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-            style={{ height: "320px" }}
+            style={{ height: "220px" }}
             placeholder="Summary"
           />
         </div>

@@ -1,10 +1,32 @@
-import { UserRoundPlus } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Chart, registerables } from "chart.js";
-
+import { Messages } from "primereact/messages";
+import { useMountEffect } from "primereact/hooks";
+import {
+  UserPlus,
+  Phone,
+  CalendarCheck,
+  MessageSquare,
+  FileText,
+  FileX2,
+} from "lucide-react";
 Chart.register(...registerables);
 
 const StatusIndicator: React.FC = () => {
+  const msgs = useRef<Messages>(null);
+
+  useMountEffect(() => {
+    msgs.current?.clear();
+    msgs.current?.show({
+      id: "1",
+      sticky: true,
+      severity: "info",
+      summary: "Info",
+      detail: "Module Work In Progress",
+      closable: false,
+    });
+  });
+
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstance = useRef<Chart | null>(null);
 
@@ -92,25 +114,66 @@ const StatusIndicator: React.FC = () => {
   }, [stats]);
 
   return (
-    <div className="p-6">
+    <div className="p-4">
+      <Messages ref={msgs} />
+
       <h2 className="text-md font-semibold mb-3">Status Summary</h2>
 
-      {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        {stats.map((item, index) => (
-          <div
-            key={index}
-            className={`flex items-center justify-between p-4 rounded-lg border ${item.border} bg-white`}
-          >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${item.bg}`}>
-                <UserRoundPlus className="w-5 h-5" color={item.color} />
-              </div>
-              <p className="font-medium text-sm">{item.label}</p>
-            </div>
-            <p className="font-bold text-gray-700">{item.value}</p>
+      <div className="flex gap-3">
+        {/* New Leads */}
+        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+          <div className="flex gap-2 items-center">
+            <UserPlus className="text-blue-500" />
+            <p>New Leads</p>
           </div>
-        ))}
+          <p>42</p>
+        </div>
+
+        {/* In Contact */}
+        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+          <div className="flex gap-2 items-center">
+            <Phone className="text-green-500" />
+            <p>In Contact</p>
+          </div>
+          <p>42</p>
+        </div>
+
+        {/* Booked */}
+        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+          <div className="flex gap-2 items-center">
+            <CalendarCheck className="text-purple-500" />
+            <p>Booked</p>
+          </div>
+          <p>42</p>
+        </div>
+
+        {/* Awaiting Reply */}
+        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+          <div className="flex gap-2 items-center">
+            <MessageSquare className="text-orange-500" />
+            <p>Awaiting Reply</p>
+          </div>
+          <p>42</p>
+        </div>
+      </div>
+
+      <div className="flex gap-3 mt-3">
+        <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
+          <div className="flex gap-2">
+            <FileText className="text-indigo-500" />
+            <p>Proposal Sent</p>
+          </div>
+          <p>42</p>
+        </div>
+        <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
+          <div className="flex gap-2">
+            <FileX2 className="text-orange-500" />
+            <p>Lost</p>
+          </div>
+          <p>42</p>
+        </div>
+        <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
+        <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
       </div>
 
       {/* Pie Chart */}

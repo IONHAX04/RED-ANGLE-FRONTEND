@@ -368,7 +368,7 @@ const ViewLeads: React.FC = () => {
         visible={viewDetailsSidebar}
         position="right"
         onHide={() => setViewDetailsSidebar(false)}
-        style={{ width: "50vw" }}
+        style={{ width: "80vw" }}
       >
         {leadDetails && <LeadDetails data={leadDetails} />}
       </Sidebar>
@@ -377,7 +377,7 @@ const ViewLeads: React.FC = () => {
         visible={updateLeadDetailsSidebar}
         position="right"
         onHide={() => setUpdateLeadDetailsSidebar(false)}
-        style={{ width: "50vw" }}
+        style={{ width: "80vw" }}
       >
         {leadDetails && <UpdateLeads data={leadDetails} />}
       </Sidebar>

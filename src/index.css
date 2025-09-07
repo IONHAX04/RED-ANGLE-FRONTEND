@@ -34,3 +34,7 @@ body {
 .p-toolbar {
   padding: 0.5rem 1.25rem;
 }
+
+.p-sidebar .p-sidebar-header {
+  padding: 10px 1rem;
+}

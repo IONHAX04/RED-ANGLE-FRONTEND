@@ -107,6 +107,10 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {
           </div>{" "}
         </div>
       </div>
+
+      <div className="flex mt-3">
+        <p>Follow Up Details</p>
+      </div>
     </div>
   );
 };

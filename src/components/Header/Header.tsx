@@ -1,20 +1,29 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "primereact/button";
 import { Avatar } from "primereact/avatar";
 import { Ripple } from "primereact/ripple";
+
+// Import lucide icons
+import {
+  Home,
+  LineChart,
+  Table,
+  ChevronDown,
+  ChevronRight,
+  Menu as MenuIcon,
+} from "lucide-react";
 
 import "./Header.css";
 
 interface SubMenuItem {
   label: string;
-  icon?: string;
+  icon?: JSX.Element;
   route?: string;
 }
 
 interface MenuItem {
   label: string;
-  icon?: string;
+  icon?: JSX.Element;
   route?: string;
   subItems?: SubMenuItem[];
 }
@@ -23,28 +32,28 @@ interface NavProps {
   children: any;
 }
 
-// Dynamic menu with routes
+// Dynamic menu with routes + lucide icons
 const menuItems: MenuItem[] = [
-  { label: "Dashboard", icon: "pi pi-home", route: "/dashboard" },
+  { label: "Dashboard", icon: <Home size={18} />, route: "/dashboard" },
   {
     label: "Leads",
-    icon: "pi pi-chart-line",
+    icon: <LineChart size={18} />,
     subItems: [
-      { label: "Add Lead", icon: "pi pi-table", route: "/leads/add" },
-      { label: "View Lead", icon: "pi pi-table", route: "/leads/view" },
+      { label: "Add Lead", icon: <Table size={18} />, route: "/leads/add" },
+      { label: "View Lead", icon: <Table size={18} />, route: "/leads/view" },
       {
-        label: "Status Indictor",
-        icon: "pi pi-table",
+        label: "Status Indicator",
+        icon: <Table size={18} />,
         route: "/leads/status",
       },
     ],
   },
   {
     label: "Assign Leads",
-    icon: "pi pi-chart-line",
+    icon: <LineChart size={18} />,
     subItems: [
-      { label: "Add Lead", icon: "pi pi-table", route: "/assign/add" },
-      { label: "View Lead", icon: "pi pi-table", route: "/assign/view" },
+      { label: "Add Lead", icon: <Table size={18} />, route: "/assign/add" },
+      { label: "View Lead", icon: <Table size={18} />, route: "/assign/view" },
     ],
   },
 ];
@@ -73,7 +82,7 @@ const Header = ({ children }: NavProps) => {
     return location.pathname === route;
   };
 
-  // Automatically open parent menus if a child route is active
+  // Auto-open parent if child active
   useEffect(() => {
     const newOpenMenus: Record<number, boolean> = {};
     menuItems.forEach((item, index) => {
@@ -94,13 +103,8 @@ const Header = ({ children }: NavProps) => {
       >
         <div className="flex flex-col h-full">
           {/* Top: Logo & Toggle */}
-          <div className="flex items-center px-3 pt-3 flex-shrink-0">
-            <Button
-              type="button"
-              icon="pi pi-bars"
-              text
-              className="h-2rem w-2rem"
-            />
+          <div className="flex items-center px-3 pt-3 flex-shrink-0 gap-2">
+            <MenuIcon size={20} className="text-gray-700" />
             <span className="font-semibold text-xl">Menu Bar</span>
           </div>
 
@@ -111,34 +115,26 @@ const Header = ({ children }: NavProps) => {
                 const hasSub = !!item.subItems?.length;
                 const isOpen = !!openMenus[index];
 
-                // Parent active if any child is active or parent route matches
-                // const isParentActive =
-                //   isActive(item.route) ||
-                //   (hasSub &&
-                //     item.subItems!.some((subItem) => isActive(subItem.route)));
-
                 return (
                   <li key={index} className="mb-1">
                     {/* Parent menu */}
                     {hasSub ? (
-                      // Parent has submenus → do NOT highlight the parent itself
                       <div
                         className="flex items-center justify-between cursor-pointer px-3 py-2 rounded transition-colors duration-150 w-full text-gray-700 hover:bg-gray-100"
                         onClick={() => toggleMenu(index)}
                       >
                         <div className="flex items-center gap-2">
-                          {item.icon && <i className={`${item.icon}`}></i>}
+                          {item.icon}
                           <span className="font-medium">{item.label}</span>
                         </div>
-                        <i
-                          className={`pi transition-transform duration-300 ${
-                            isOpen ? "pi-chevron-down" : "pi-chevron-right"
-                          }`}
-                        ></i>
+                        {isOpen ? (
+                          <ChevronDown size={16} />
+                        ) : (
+                          <ChevronRight size={16} />
+                        )}
                         <Ripple />
                       </div>
                     ) : (
-                      // Parent has no submenu → highlight if active
                       <Link
                         to={item.route!}
                         className={`flex items-center gap-2 px-3 py-2 rounded w-full transition-colors duration-150 ${
@@ -147,7 +143,7 @@ const Header = ({ children }: NavProps) => {
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
-                        {item.icon && <i className={`${item.icon}`}></i>}
+                        {item.icon}
                         <span className="font-medium">{item.label}</span>
                         <Ripple />
                       </Link>
@@ -170,9 +166,7 @@ const Header = ({ children }: NavProps) => {
                                   : "text-gray-700 hover:bg-gray-100"
                               }`}
                             >
-                              {subItem.icon && (
-                                <i className={`${subItem.icon}`}></i>
-                              )}
+                              {subItem.icon}
                               <span className="font-medium">
                                 {subItem.label}
                               </span>
