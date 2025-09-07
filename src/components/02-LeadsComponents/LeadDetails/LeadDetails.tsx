@@ -24,35 +24,31 @@ interface LeadDetailsProps {
 
 const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-3">
-        {data.firstName} {data.lastName}
-      </h2>
-      <p>
-        <strong>Email:</strong> {data.email}
-      </p>
-      <p>
-        <strong>Mobile:</strong> {data.mobile}
-      </p>
-      <p>
-        <strong>Event:</strong> {data.eventType}
-      </p>
-      <p>
-        <strong>Source:</strong> {data.leadSource}
-      </p>
-      <p>
-        <strong>Status:</strong> {data.status}
-      </p>
-      <p>
-        <strong>Budget:</strong> {data.budget}
-      </p>
-      <p>
-        <strong>Notes:</strong> {data.notes}
-      </p>
-      <p>
-        <strong>Address:</strong>{" "}
-        {`${data.address.doorNo}, ${data.address.street}, ${data.address.city}, ${data.address.state}, ${data.address.country}`}
-      </p>
+    <div className="px-4">
+      <div className="flex">
+        <img src="" alt="" />
+        <div className="flex flex-col">
+          <p>
+            {data.firstName} {data.lastName}
+          </p>
+          <p>Owner: You</p>
+        </div>
+        <p>Call</p>
+        <p>Email</p>
+        <p>Mark Booked</p>
+      </div>
+      <div className="flex">
+        <div className="flex-1">
+          <p>Lead SOurce</p>
+          <p>Stage: COntacted or ... status</p>
+          <p>Event TYpe</p>
+          <p>Budget</p>
+          <p>Event Date</p>
+        </div>
+        <div className="flex-1">
+          <p>COntact Details</p>
+        </div>
+      </div>
     </div>
   );
 };
