@@ -10,11 +10,14 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
+import { Sidebar } from "primereact/sidebar";
 
 import type {
   DataTableFilterMeta,
   DataTableFilterMetaData,
 } from "primereact/datatable";
+import { useNavigate } from "react-router-dom";
+import LeadDetails from "../LeadDetails/LeadDetails";
 
 interface Address {
   doorNo: string;
@@ -52,6 +55,9 @@ interface Customer {
 
 const ViewLeads: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
+  const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
 
   const [customers] = useState<Customer[]>([
     {
@@ -61,7 +67,7 @@ const ViewLeads: React.FC = () => {
       email: "john@example.com",
       mobile: "999-111-2222",
       eventType: "Wedding",
-      leadSource: "instagram",
+      leadSource: "Instagram",
       budget: 50000,
       notes: "Looking for candid shots",
       status: "New",
@@ -168,12 +174,11 @@ const ViewLeads: React.FC = () => {
     }));
   };
 
-  // --- selection logic ---
   const selectionCount = selectedCustomers.length;
   const isAddDisabled = selectionCount > 0;
   const isSingleSelected = selectionCount === 1;
   const isMultiSelected = selectionCount > 1;
-  console.log('isMultiSelected', isMultiSelected)
+  console.log("isMultiSelected", isMultiSelected);
 
   // Toolbar buttons
   const rightToolbarTemplate = () => {
@@ -184,12 +189,19 @@ const ViewLeads: React.FC = () => {
           icon="pi pi-plus"
           severity="success"
           disabled={isAddDisabled}
+          onClick={() => navigate("/leads/add")}
         />
         <Button
-          label="Edit"
-          icon="pi pi-pencil"
+          label="Details"
+          icon="pi pi-eye"
           severity="info"
           disabled={!isSingleSelected}
+          onClick={() => {
+            if (isSingleSelected) {
+              setLeadDetails(selectedCustomers[0]); // get the single selected row
+              setShowSidebar(true);
+            }
+          }}
         />
         <Button
           label="Update"
@@ -240,7 +252,7 @@ const ViewLeads: React.FC = () => {
           (filters["leadSource"] as DataTableFilterMetaData)?.value || null
         }
         options={[
-          { label: "Instagram", value: "instagram" },
+          { label: "Instagram", value: "Instagram" },
           { label: "LinkedIn", value: "Linkedin" },
           { label: "Facebook", value: "Facebook" },
           { label: "Referral", value: "Referral" },
@@ -265,10 +277,9 @@ const ViewLeads: React.FC = () => {
         <div className="font-bold">
           {row.firstName} {row.lastName}
         </div>
-        <div className="text-sm text-gray-600">{row.eventType}</div>
-        <div className="text-xs text-gray-500">
-          {row.address.doorNo}, {row.address.street}, {row.address.city},{" "}
-          {row.address.state}, {row.address.country}
+        <div className="text-sm text-gray-600 line-clamp-1">
+          {row.eventType} -{row.address.doorNo}, {row.address.street},{" "}
+          {row.address.city}, {row.address.state}, {row.address.country}
         </div>
       </div>
     );
@@ -336,6 +347,14 @@ const ViewLeads: React.FC = () => {
           )}
         />
       </DataTable>
+      <Sidebar
+        visible={showSidebar}
+        position="right"
+        onHide={() => setShowSidebar(false)}
+        style={{ width: "50vw" }}
+      >
+        {leadDetails && <LeadDetails data={leadDetails} />}
+      </Sidebar>
     </div>
   );
 };
