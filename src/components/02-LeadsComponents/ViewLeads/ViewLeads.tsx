@@ -11,7 +11,10 @@ import { Calendar } from "primereact/calendar";
 import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
 
-import type { DataTableFilterMeta } from "primereact/datatable";
+import type {
+  DataTableFilterMeta,
+  DataTableFilterMetaData,
+} from "primereact/datatable";
 
 interface Address {
   doorNo: string;
@@ -137,7 +140,31 @@ const ViewLeads: React.FC = () => {
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    leadSource: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
+
+  const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setFilters((prev) => ({
+      ...prev,
+      global: { ...prev.global, value },
+    }));
+  };
+
+  const onStatusFilterChange = (value: string | null) => {
+    setFilters((prev) => ({
+      ...prev,
+      status: { ...prev.status, value },
+    }));
+  };
+
+  const onLeadSourceFilterChange = (value: string | null) => {
+    setFilters((prev) => ({
+      ...prev,
+      leadSource: { ...prev.leadSource, value },
+    }));
+  };
 
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
@@ -179,12 +206,12 @@ const ViewLeads: React.FC = () => {
     }
   };
 
-  const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const _filters = { ...filters };
-    (_filters["global"] as any).value = value;
-    setFilters(_filters);
-  };
+  // const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = event.target.value;
+  //   const _filters = { ...filters };
+  //   (_filters["global"] as any).value = value;
+  //   setFilters(_filters);
+  // };
 
   // Toolbar buttons
   const rightToolbarTemplate = () => {
@@ -224,18 +251,29 @@ const ViewLeads: React.FC = () => {
           placeholder="Global Search"
         />
       </IconField>
+
       <Dropdown
+        value={(filters["status"] as DataTableFilterMetaData)?.value || null}
         options={statusOptions}
         placeholder="All Status"
         className="flex-1 min-w-[200px]"
+        onChange={(e) => onStatusFilterChange(e.value)}
+        showClear
       />
+
       <Dropdown
+        value={
+          (filters["leadSource"] as DataTableFilterMetaData)?.value || null
+        }
         options={leadSources}
         optionLabel="label"
         optionValue="value"
         placeholder="All Sources"
         className="flex-1 min-w-[200px]"
+        onChange={(e) => onLeadSourceFilterChange(e.value)}
+        showClear
       />
+
       <Calendar placeholder="Booking Date" className="flex-1 min-w-[200px]" />
     </div>
   );
@@ -299,11 +337,14 @@ const ViewLeads: React.FC = () => {
         <Column
           field="leadSource"
           header="Lead Source"
+          filterField="leadSource"
           style={{ minWidth: "12rem" }}
         />
+
         <Column
           field="status"
           header="Status"
+          filterField="status"
           style={{ minWidth: "10rem" }}
           body={(row) => (
             <Tag value={row.status} severity={getSeverity(row.status)} />
