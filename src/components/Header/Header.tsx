@@ -32,6 +32,11 @@ const menuItems: MenuItem[] = [
     subItems: [
       { label: "Add Lead", icon: "pi pi-table", route: "/leads/add" },
       { label: "View Lead", icon: "pi pi-table", route: "/leads/view" },
+      {
+        label: "Status Indictor",
+        icon: "pi pi-table",
+        route: "/leads/status",
+      },
     ],
   },
   {

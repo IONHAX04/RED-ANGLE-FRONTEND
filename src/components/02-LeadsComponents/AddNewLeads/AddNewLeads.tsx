@@ -30,6 +30,12 @@ const AddNewLeads: React.FC = () => {
     email: "",
     mobile: "",
     secondaryMobile: "",
+    doorNo: "",
+    street: "",
+    city: "",
+    district: "",
+    state: "",
+    country: "",
     eventType: "",
     leadSource: "",
     budget: "",
@@ -57,6 +63,12 @@ const AddNewLeads: React.FC = () => {
       email: "",
       mobile: "",
       secondaryMobile: "",
+      doorNo: "",
+      street: "",
+      city: "",
+      district: "",
+      state: "",
+      country: "",
       eventType: "",
       leadSource: "",
       budget: "",
@@ -134,6 +146,72 @@ const AddNewLeads: React.FC = () => {
               placeholder="Enter Secondary Mobile"
               value={formData.secondaryMobile}
               onChange={(e) => handleChange("secondaryMobile", e.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-3">
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Door No</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter Door Number"
+              value={formData.doorNo}
+              onChange={(e) => handleChange("doorNo", e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Street</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter Street"
+              value={formData.street}
+              onChange={(e) => handleChange("street", e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>City</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter City"
+              value={formData.city}
+              onChange={(e) => handleChange("city", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-3">
+          <div className="flex flex-1 flex-column gap-2">
+            <label>District</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter District"
+              value={formData.district}
+              onChange={(e) => handleChange("district", e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>State</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter State"
+              value={formData.state}
+              onChange={(e) => handleChange("state", e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-column gap-2">
+            <label>Country</label>
+            <InputText
+              type="text"
+              className="p-inputtext-sm"
+              placeholder="Enter Country"
+              value={formData.country}
+              onChange={(e) => handleChange("country", e.target.value)}
             />
           </div>
         </div>
