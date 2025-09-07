@@ -18,6 +18,7 @@ import type {
 } from "primereact/datatable";
 import { useNavigate } from "react-router-dom";
 import LeadDetails from "../LeadDetails/LeadDetails";
+import UpdateLeads from "../UpdateLeads/UpdateLeads";
 
 interface Address {
   doorNo: string;
@@ -56,7 +57,9 @@ interface Customer {
 const ViewLeads: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const navigate = useNavigate();
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [viewDetailsSidebar, setViewDetailsSidebar] = useState(false);
+  const [updateLeadDetailsSidebar, setUpdateLeadDetailsSidebar] =
+    useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
 
   const [customers] = useState<Customer[]>([
@@ -198,8 +201,8 @@ const ViewLeads: React.FC = () => {
           disabled={!isSingleSelected}
           onClick={() => {
             if (isSingleSelected) {
-              setLeadDetails(selectedCustomers[0]); // get the single selected row
-              setShowSidebar(true);
+              setLeadDetails(selectedCustomers[0]);
+              setViewDetailsSidebar(true);
             }
           }}
         />
@@ -208,6 +211,12 @@ const ViewLeads: React.FC = () => {
           icon="pi pi-refresh"
           severity="warning"
           disabled={!isSingleSelected}
+          onClick={() => {
+            if (isSingleSelected) {
+              setLeadDetails(selectedCustomers[0]);
+              setUpdateLeadDetailsSidebar(true);
+            }
+          }}
         />
         <Button
           label="Delete"
@@ -220,53 +229,61 @@ const ViewLeads: React.FC = () => {
   };
 
   const header = (
-    <div className="flex gap-3 flex-wrap">
-      <IconField iconPosition="left" className="flex-1 min-w-[200px]">
-        <InputIcon className="pi pi-search" />
-        <InputText
-          type="search"
-          value={(filters["global"] as any)?.value || ""}
-          onChange={onGlobalFilterChange}
-          placeholder="Global Search"
+    <div className="flex gap-3">
+      <div className="flex-1">
+        <IconField iconPosition="left" className="w-full">
+          <InputIcon className="pi pi-search" />
+          <InputText
+            type="search"
+            value={(filters["global"] as any)?.value || ""}
+            onChange={onGlobalFilterChange}
+            placeholder="Global Search"
+          />
+        </IconField>
+      </div>
+
+      <div className="flex-1">
+        <Dropdown
+          value={(filters["status"] as DataTableFilterMetaData)?.value || null}
+          options={[
+            "New",
+            "Contacted",
+            "Booked",
+            "Lost",
+            "Awaiting Reply",
+            "Proposal sent",
+          ]}
+          placeholder="All Status"
+          className="w-full"
+          onChange={(e) => onStatusFilterChange(e.value)}
+          showClear
         />
-      </IconField>
+      </div>
 
-      <Dropdown
-        value={(filters["status"] as DataTableFilterMetaData)?.value || null}
-        options={[
-          "New",
-          "Contacted",
-          "Booked",
-          "Lost",
-          "Awaiting Reply",
-          "Proposal sent",
-        ]}
-        placeholder="All Status"
-        className="flex-1 min-w-[200px]"
-        onChange={(e) => onStatusFilterChange(e.value)}
-        showClear
-      />
+      <div className="flex-1">
+        <Dropdown
+          value={
+            (filters["leadSource"] as DataTableFilterMetaData)?.value || null
+          }
+          options={[
+            { label: "Instagram", value: "Instagram" },
+            { label: "LinkedIn", value: "Linkedin" },
+            { label: "Facebook", value: "Facebook" },
+            { label: "Referral", value: "Referral" },
+            { label: "Other", value: "other" },
+          ]}
+          optionLabel="label"
+          optionValue="value"
+          className="w-full"
+          placeholder="All Sources"
+          onChange={(e) => onLeadSourceFilterChange(e.value)}
+          showClear
+        />
+      </div>
 
-      <Dropdown
-        value={
-          (filters["leadSource"] as DataTableFilterMetaData)?.value || null
-        }
-        options={[
-          { label: "Instagram", value: "Instagram" },
-          { label: "LinkedIn", value: "Linkedin" },
-          { label: "Facebook", value: "Facebook" },
-          { label: "Referral", value: "Referral" },
-          { label: "Other", value: "other" },
-        ]}
-        optionLabel="label"
-        optionValue="value"
-        placeholder="All Sources"
-        className="flex-1 min-w-[200px]"
-        onChange={(e) => onLeadSourceFilterChange(e.value)}
-        showClear
-      />
-
-      <Calendar placeholder="Booking Date" className="flex-1 min-w-[200px]" />
+      <div className="flex-1">
+        <Calendar placeholder="Booking Date" className="w-full" />
+      </div>
     </div>
   );
 
@@ -348,12 +365,21 @@ const ViewLeads: React.FC = () => {
         />
       </DataTable>
       <Sidebar
-        visible={showSidebar}
+        visible={viewDetailsSidebar}
         position="right"
-        onHide={() => setShowSidebar(false)}
+        onHide={() => setViewDetailsSidebar(false)}
         style={{ width: "50vw" }}
       >
         {leadDetails && <LeadDetails data={leadDetails} />}
+      </Sidebar>
+
+      <Sidebar
+        visible={updateLeadDetailsSidebar}
+        position="right"
+        onHide={() => setUpdateLeadDetailsSidebar(false)}
+        style={{ width: "50vw" }}
+      >
+        {leadDetails && <UpdateLeads data={leadDetails} />}
       </Sidebar>
     </div>
   );
