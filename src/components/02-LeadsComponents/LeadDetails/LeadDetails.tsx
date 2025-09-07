@@ -1,3 +1,5 @@
+import { Avatar } from "primereact/avatar";
+import { Chip } from "primereact/chip";
 import React from "react";
 
 interface LeadDetailsProps {
@@ -23,30 +25,40 @@ interface LeadDetailsProps {
 }
 
 const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {
+  const userInfo = {
+    name: "Amy Elsner",
+    avatar: "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png",
+  };
+
   return (
     <div className="px-4">
-      <div className="flex">
-        <img src="" alt="" />
-        <div className="flex flex-col">
-          <p>
-            {data.firstName} {data.lastName}
-          </p>
-          <p>Owner: You</p>
+      <div className="intro flex gap-3 items-center justify-content-between">
+        <div className="flex items-center gap-3">
+          <Avatar image={userInfo.avatar} shape="circle" />
+          <div className="flex flex-col">
+            <p>
+              {data.firstName} {data.lastName}
+            </p>
+            <p>{data.eventType}</p>
+            <p>Owner: You</p>
+          </div>
         </div>
-        <p>Call</p>
-        <p>Email</p>
-        <p>Mark Booked</p>
-      </div>
-      <div className="flex">
-        <div className="flex-1">
-          <p>Lead SOurce</p>
-          <p>Stage: COntacted or ... status</p>
-          <p>Event TYpe</p>
-          <p>Budget</p>
-          <p>Event Date</p>
-        </div>
-        <div className="flex-1">
-          <p>COntact Details</p>
+        <div className="flex">
+          <Chip
+            label="Call"
+            icon="pi pi-phone"
+            className="bg-green-100 text-green-700"
+          />
+          <Chip
+            label="Email"
+            icon="pi pi-envelope"
+            className="bg-blue-100 text-blue-700"
+          />
+          <Chip
+            label="Mark Booked"
+            icon="pi pi-check-circle"
+            className="bg-purple-100 text-purple-700"
+          />
         </div>
       </div>
     </div>
