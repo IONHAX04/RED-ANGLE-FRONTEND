@@ -1,3 +1,4 @@
+import { Accordion, AccordionTab } from "primereact/accordion";
 import { Avatar } from "primereact/avatar";
 import { Chip } from "primereact/chip";
 import { Divider } from "primereact/divider";
@@ -30,6 +31,24 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {
     name: "Amy Elsner",
     avatar: "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png",
   };
+
+  const followUps = [
+    {
+      title: "Follow Up 1 - Proposal Sent",
+      nextDate: "2025-09-10 10:00 AM",
+      summary: "Discussed package pricing and shared proposal.",
+      discussion:
+        "Client requested a custom package including photography + videography.",
+      actionItems: "Awaiting client confirmation by next week.",
+    },
+    {
+      title: "Follow Up 2 - In Discussion",
+      nextDate: "2025-09-15 05:00 PM",
+      summary: "Talked about payment flexibility.",
+      discussion: "Client asked about EMI options and extra services.",
+      actionItems: "Need to send updated proposal with payment breakdown.",
+    },
+  ];
 
   return (
     <div className="px-1">
@@ -108,9 +127,33 @@ const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex mt-3">
+      <div className="flex mt-3 mb-3">
         <p>Follow Up Details</p>
       </div>
+      <Accordion multiple>
+        {followUps.map((item, index) => (
+          <AccordionTab key={index} header={item.title}>
+            <div className="p-3 flex flex-col gap-3 text-sm">
+              <div className="flex gap-2">
+                <span className="font-medium w-40">Next Follow Up:</span>
+                <span>{item.nextDate}</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium w-40">Interaction Summary:</span>
+                <span>{item.summary}</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium w-40">Key Discussion Points:</span>
+                <span>{item.discussion}</span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-medium w-40">Action Items:</span>
+                <span>{item.actionItems}</span>
+              </div>
+            </div>
+          </AccordionTab>
+        ))}
+      </Accordion>
     </div>
   );
 };
