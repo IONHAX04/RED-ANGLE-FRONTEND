@@ -51,6 +51,8 @@ interface Customer {
 }
 
 const ViewLeads: React.FC = () => {
+  const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
+
   const [customers] = useState<Customer[]>([
     {
       id: 1,
@@ -80,7 +82,7 @@ const ViewLeads: React.FC = () => {
       email: "jane@example.com",
       mobile: "888-222-3333",
       eventType: "Birthday",
-      leadSource: "referral",
+      leadSource: "Referral",
       budget: 20000,
       notes: "Outdoor photoshoot",
       status: "Contacted",
@@ -101,7 +103,7 @@ const ViewLeads: React.FC = () => {
       email: "arun@example.com",
       mobile: "777-555-1212",
       eventType: "Engagement",
-      leadSource: "facebook",
+      leadSource: "Facebook",
       budget: 30000,
       notes: "Indoor studio setup",
       status: "Proposal sent",
@@ -122,7 +124,7 @@ const ViewLeads: React.FC = () => {
       email: "maria@example.com",
       mobile: "666-444-9999",
       eventType: "Corporate Event",
-      leadSource: "linkedin",
+      leadSource: "Linkedin",
       budget: 80000,
       notes: "Full-day coverage",
       status: "Booked",
@@ -166,75 +168,40 @@ const ViewLeads: React.FC = () => {
     }));
   };
 
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-    null
-  );
-
-  const statusOptions = [
-    "New",
-    "Contacted",
-    "Booked",
-    "Lost",
-    "Awaiting Reply",
-    "Proposal sent",
-  ];
-
-  const leadSources = [
-    { label: "Instagram", value: "instagram" },
-    { label: "LinkedIn", value: "linkedin" },
-    { label: "Facebook", value: "facebook" },
-    { label: "Referral", value: "referral" },
-    { label: "Other", value: "other" },
-  ];
-
-  const getSeverity = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "lost":
-        return "danger";
-      case "booked":
-        return "success";
-      case "new":
-        return "info";
-      case "awaiting reply":
-        return "warning";
-      case "contacted":
-        return "secondary";
-      case "proposal sent":
-        return "info";
-      default:
-        return null;
-    }
-  };
-
-  // const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = event.target.value;
-  //   const _filters = { ...filters };
-  //   (_filters["global"] as any).value = value;
-  //   setFilters(_filters);
-  // };
+  // --- selection logic ---
+  const selectionCount = selectedCustomers.length;
+  const isAddDisabled = selectionCount > 0;
+  const isSingleSelected = selectionCount === 1;
+  const isMultiSelected = selectionCount > 1;
+  console.log('isMultiSelected', isMultiSelected)
 
   // Toolbar buttons
   const rightToolbarTemplate = () => {
     return (
       <div className="flex gap-2">
-        <Button label="Add" icon="pi pi-plus" severity="success" />
+        <Button
+          label="Add"
+          icon="pi pi-plus"
+          severity="success"
+          disabled={isAddDisabled}
+        />
         <Button
           label="Edit"
           icon="pi pi-pencil"
           severity="info"
-          disabled={!selectedCustomer}
+          disabled={!isSingleSelected}
         />
         <Button
           label="Update"
           icon="pi pi-refresh"
           severity="warning"
-          disabled={!selectedCustomer}
+          disabled={!isSingleSelected}
         />
         <Button
           label="Delete"
           icon="pi pi-trash"
           severity="danger"
-          disabled={!selectedCustomer}
+          disabled={selectionCount === 0}
         />
       </div>
     );
@@ -254,7 +221,14 @@ const ViewLeads: React.FC = () => {
 
       <Dropdown
         value={(filters["status"] as DataTableFilterMetaData)?.value || null}
-        options={statusOptions}
+        options={[
+          "New",
+          "Contacted",
+          "Booked",
+          "Lost",
+          "Awaiting Reply",
+          "Proposal sent",
+        ]}
         placeholder="All Status"
         className="flex-1 min-w-[200px]"
         onChange={(e) => onStatusFilterChange(e.value)}
@@ -265,7 +239,13 @@ const ViewLeads: React.FC = () => {
         value={
           (filters["leadSource"] as DataTableFilterMetaData)?.value || null
         }
-        options={leadSources}
+        options={[
+          { label: "Instagram", value: "instagram" },
+          { label: "LinkedIn", value: "Linkedin" },
+          { label: "Facebook", value: "Facebook" },
+          { label: "Referral", value: "Referral" },
+          { label: "Other", value: "other" },
+        ]}
         optionLabel="label"
         optionValue="value"
         placeholder="All Sources"
@@ -306,9 +286,9 @@ const ViewLeads: React.FC = () => {
         header={header}
         filters={filters}
         onFilter={(e) => setFilters(e.filters)}
-        selection={selectedCustomer}
-        onSelectionChange={(e) => setSelectedCustomer(e.value as Customer)}
-        selectionMode="single"
+        selection={selectedCustomers}
+        onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
+        selectionMode="multiple"
         dataKey="id"
         showGridlines
         className="mt-3 p-datatable-sm"
@@ -316,6 +296,11 @@ const ViewLeads: React.FC = () => {
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} leads"
       >
+        <Column
+          selectionMode="multiple"
+          headerStyle={{ width: "3rem" }}
+        ></Column>
+
         <Column
           header="S.No"
           body={(_, { rowIndex }) => rowIndex + 1}
@@ -353,6 +338,26 @@ const ViewLeads: React.FC = () => {
       </DataTable>
     </div>
   );
+};
+
+// Helper for severity
+const getSeverity = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "lost":
+      return "danger";
+    case "booked":
+      return "success";
+    case "new":
+      return "info";
+    case "awaiting reply":
+      return "warning";
+    case "contacted":
+      return "secondary";
+    case "proposal sent":
+      return "info";
+    default:
+      return null;
+  }
 };
 
 export default ViewLeads;
