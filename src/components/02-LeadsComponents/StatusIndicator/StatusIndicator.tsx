@@ -10,6 +10,7 @@ import {
   FileText,
   FileX2,
 } from "lucide-react";
+import SubHeader from "../../Header/SubHeader/SubHeader";
 Chart.register(...registerables);
 
 const StatusIndicator: React.FC = () => {
@@ -114,73 +115,84 @@ const StatusIndicator: React.FC = () => {
   }, [stats]);
 
   return (
-    <div className="p-4">
-      <Messages ref={msgs} />
+    <div>
+      <SubHeader
+        title="Status Indicator"
+        subtitle={new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      />
+      <div className="p-4">
+        <Messages ref={msgs} />
 
-      <h2 className="text-md font-semibold mb-3">Status Summary</h2>
+        <h2 className="text-md font-semibold mb-3">Status Summary</h2>
 
-      <div className="flex gap-3">
-        {/* New Leads */}
-        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
-          <div className="flex gap-2 items-center">
-            <UserPlus className="text-blue-500" />
-            <p>New Leads</p>
+        <div className="flex gap-3">
+          {/* New Leads */}
+          <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+            <div className="flex gap-2 items-center">
+              <UserPlus className="text-blue-500" />
+              <p>New Leads</p>
+            </div>
+            <p>42</p>
           </div>
-          <p>42</p>
+
+          {/* In Contact */}
+          <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+            <div className="flex gap-2 items-center">
+              <Phone className="text-green-500" />
+              <p>In Contact</p>
+            </div>
+            <p>42</p>
+          </div>
+
+          {/* Booked */}
+          <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+            <div className="flex gap-2 items-center">
+              <CalendarCheck className="text-purple-500" />
+              <p>Booked</p>
+            </div>
+            <p>42</p>
+          </div>
+
+          {/* Awaiting Reply */}
+          <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
+            <div className="flex gap-2 items-center">
+              <MessageSquare className="text-orange-500" />
+              <p>Awaiting Reply</p>
+            </div>
+            <p>42</p>
+          </div>
         </div>
 
-        {/* In Contact */}
-        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
-          <div className="flex gap-2 items-center">
-            <Phone className="text-green-500" />
-            <p>In Contact</p>
+        <div className="flex gap-3 mt-3">
+          <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
+            <div className="flex gap-2">
+              <FileText className="text-indigo-500" />
+              <p>Proposal Sent</p>
+            </div>
+            <p>42</p>
           </div>
-          <p>42</p>
+          <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
+            <div className="flex gap-2">
+              <FileX2 className="text-orange-500" />
+              <p>Lost</p>
+            </div>
+            <p>42</p>
+          </div>
+          <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
+          <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
         </div>
 
-        {/* Booked */}
-        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
-          <div className="flex gap-2 items-center">
-            <CalendarCheck className="text-purple-500" />
-            <p>Booked</p>
+        {/* Pie Chart */}
+        <div className="mt-3 shadow-md border rounded-lg p-6 bg-white">
+          <h3 className="mb-4 font-semibold text-md">Status Distribution</h3>
+          <div className="flex flex-col lg:flex-row items-center gap-6">
+            <canvas ref={chartRef} className="max-w-[400px] max-h-[400px]" />
           </div>
-          <p>42</p>
-        </div>
-
-        {/* Awaiting Reply */}
-        <div className="flex-1 flex items-center justify-between border p-3 rounded-lg shadow-sm">
-          <div className="flex gap-2 items-center">
-            <MessageSquare className="text-orange-500" />
-            <p>Awaiting Reply</p>
-          </div>
-          <p>42</p>
-        </div>
-      </div>
-
-      <div className="flex gap-3 mt-3">
-        <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
-          <div className="flex gap-2">
-            <FileText className="text-indigo-500" />
-            <p>Proposal Sent</p>
-          </div>
-          <p>42</p>
-        </div>
-        <div className="flex-1 flex items-center justify-content-between border-1 p-3 rounded-lg">
-          <div className="flex gap-2">
-            <FileX2 className="text-orange-500" />
-            <p>Lost</p>
-          </div>
-          <p>42</p>
-        </div>
-        <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
-        <div className="flex-1 flex items-center justify-content-between p-3 rounded-lg"></div>
-      </div>
-
-      {/* Pie Chart */}
-      <div className="mt-8 shadow-md border rounded-lg p-6 bg-white">
-        <h3 className="mb-4 font-semibold text-md">Status Distribution</h3>
-        <div className="flex flex-col lg:flex-row items-center gap-6">
-          <canvas ref={chartRef} className="max-w-[400px] max-h-[400px]" />
         </div>
       </div>
     </div>

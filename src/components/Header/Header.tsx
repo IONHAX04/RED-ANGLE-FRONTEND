@@ -52,8 +52,34 @@ const menuItems: MenuItem[] = [
     label: "Assign Leads",
     icon: <LineChart size={18} />,
     subItems: [
-      { label: "Add Lead", icon: <Table size={18} />, route: "/assign/add" },
-      { label: "View Lead", icon: <Table size={18} />, route: "/assign/view" },
+      { label: "Assign Lead", icon: <Table size={18} />, route: "/assign/add" },
+      { label: "Track Lead", icon: <Table size={18} />, route: "/assign/view" },
+    ],
+  },
+  {
+    label: "Quotation",
+    icon: <LineChart size={18} />,
+    subItems: [
+      {
+        label: "List Quotation",
+        icon: <Table size={18} />,
+        route: "/quotation/view",
+      },
+      {
+        label: "Add Quotation",
+        icon: <Table size={18} />,
+        route: "/quotation/add",
+      },
+      {
+        label: "Preview",
+        icon: <Table size={18} />,
+        route: "/quotation/preview",
+      },
+      {
+        label: "Send To Client",
+        icon: <Table size={18} />,
+        route: "/quotation/sent",
+      },
     ],
   },
 ];

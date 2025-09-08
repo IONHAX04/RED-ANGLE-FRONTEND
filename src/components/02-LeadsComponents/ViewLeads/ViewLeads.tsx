@@ -19,6 +19,7 @@ import type {
 import { useNavigate } from "react-router-dom";
 import LeadDetails from "../LeadDetails/LeadDetails";
 import UpdateLeads from "../UpdateLeads/UpdateLeads";
+import SubHeader from "../../Header/SubHeader/SubHeader";
 
 interface Address {
   doorNo: string;
@@ -303,84 +304,99 @@ const ViewLeads: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <Toolbar right={rightToolbarTemplate} />
-      <DataTable
-        value={customers}
-        paginator
-        scrollable
-        rows={5}
-        rowsPerPageOptions={[5, 10, 25]}
-        header={header}
-        filters={filters}
-        onFilter={(e) => setFilters(e.filters)}
-        selection={selectedCustomers}
-        onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
-        selectionMode="multiple"
-        dataKey="id"
-        showGridlines
-        className="mt-3 p-datatable-sm"
-        emptyMessage="No leads found."
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} leads"
-      >
-        <Column
+    <div>
+      <SubHeader
+        title="View Leads"
+        subtitle={new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      />
+      <div className="p-4">
+        <Toolbar right={rightToolbarTemplate} />
+        <DataTable
+          value={customers}
+          paginator
+          scrollable
+          rows={5}
+          rowsPerPageOptions={[5, 10, 25]}
+          header={header}
+          filters={filters}
+          onFilter={(e) => setFilters(e.filters)}
+          selection={selectedCustomers}
+          onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
           selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
-        ></Column>
+          dataKey="id"
+          showGridlines
+          className="mt-3 p-datatable-sm"
+          emptyMessage="No leads found."
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} leads"
+        >
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ width: "3rem" }}
+          ></Column>
 
-        <Column
-          header="S.No"
-          body={(_, { rowIndex }) => rowIndex + 1}
-          style={{ minWidth: "4rem" }}
-        />
-        <Column
-          header="Lead Details"
-          body={nameTemplate}
-          style={{ minWidth: "18rem" }}
-        />
-        <Column
-          field="email"
-          header="Email"
-          sortable
-          style={{ minWidth: "12rem" }}
-        />
-        <Column field="mobile" header="Mobile" style={{ minWidth: "12rem" }} />
-        <Column field="budget" header="Budget" style={{ minWidth: "7rem" }} />
-        <Column
-          field="leadSource"
-          header="Lead Source"
-          filterField="leadSource"
-          style={{ minWidth: "12rem" }}
-        />
+          <Column
+            header="S.No"
+            body={(_, { rowIndex }) => rowIndex + 1}
+            style={{ minWidth: "4rem" }}
+          />
+          <Column
+            header="Lead Details"
+            body={nameTemplate}
+            style={{ minWidth: "18rem" }}
+          />
+          <Column
+            field="email"
+            header="Email"
+            sortable
+            style={{ minWidth: "12rem" }}
+          />
+          <Column
+            field="mobile"
+            header="Mobile"
+            style={{ minWidth: "12rem" }}
+          />
+          <Column field="budget" header="Budget" style={{ minWidth: "7rem" }} />
+          <Column
+            field="leadSource"
+            header="Lead Source"
+            filterField="leadSource"
+            style={{ minWidth: "12rem" }}
+          />
 
-        <Column
-          field="status"
-          header="Status"
-          filterField="status"
-          style={{ minWidth: "10rem" }}
-          body={(row) => (
-            <Tag value={row.status} severity={getSeverity(row.status)} />
-          )}
-        />
-      </DataTable>
-      <Sidebar
-        visible={viewDetailsSidebar}
-        position="right"
-        onHide={() => setViewDetailsSidebar(false)}
-        style={{ width: "80vw" }}
-      >
-        {leadDetails && <LeadDetails data={leadDetails} />}
-      </Sidebar>
+          <Column
+            field="status"
+            header="Status"
+            filterField="status"
+            style={{ minWidth: "10rem" }}
+            body={(row) => (
+              <Tag value={row.status} severity={getSeverity(row.status)} />
+            )}
+          />
+        </DataTable>
+        <Sidebar
+          visible={viewDetailsSidebar}
+          position="right"
+          onHide={() => setViewDetailsSidebar(false)}
+          style={{ width: "80vw" }}
+        >
+          {leadDetails && <LeadDetails data={leadDetails} />}
+        </Sidebar>
 
-      <Sidebar
-        visible={updateLeadDetailsSidebar}
-        position="right"
-        onHide={() => setUpdateLeadDetailsSidebar(false)}
-        style={{ width: "80vw" }}
-      >
-        {leadDetails && <UpdateLeads data={leadDetails} />}
-      </Sidebar>
+        <Sidebar
+          visible={updateLeadDetailsSidebar}
+          position="right"
+          onHide={() => setUpdateLeadDetailsSidebar(false)}
+          style={{ width: "80vw" }}
+        >
+          {leadDetails && <UpdateLeads data={leadDetails} />}
+        </Sidebar>
+      </div>
     </div>
   );
 };

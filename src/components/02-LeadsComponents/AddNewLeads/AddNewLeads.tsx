@@ -6,6 +6,7 @@ import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Divider } from "primereact/divider";
+import SubHeader from "../../Header/SubHeader/SubHeader";
 
 const AddNewLeads: React.FC = () => {
   const eventTypes = [
@@ -80,248 +81,258 @@ const AddNewLeads: React.FC = () => {
   };
 
   return (
-    <div className="p-3">
-      <p className="uppercase font-bold underline text-lg">Add New Lead</p>
-      <div className="p-3 shadow-lg rounded-lg">
-        {/* Basic Details */}
-        <p className="underline uppercase font-semibold text-md">
-          Basic Details
-        </p>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>First Name</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter First Name"
-              value={formData.firstName}
-              onChange={(e) => handleChange("firstName", e.target.value)}
-            />
+    <div>
+      <SubHeader
+        title="Add New Leads"
+        subtitle={new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })}
+      />
+      <div className="p-3">
+        <div className="p-3 shadow-lg rounded-lg">
+          {/* Basic Details */}
+          <p className="underline uppercase font-semibold text-md">
+            Basic Details
+          </p>
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>First Name</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter First Name"
+                value={formData.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Last Name</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter Last Name"
+                value={formData.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
+              />
+            </div>
+            <div className="flex-1"></div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Last Name</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter Last Name"
-              value={formData.lastName}
-              onChange={(e) => handleChange("lastName", e.target.value)}
-            />
-          </div>
-          <div className="flex-1"></div>
-        </div>
 
-        <Divider />
+          <Divider />
 
-        {/* Communication Details */}
-        <p className="mt-2 underline uppercase font-semibold text-md">
-          Communication Details
-        </p>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Email</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter Email"
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-            />
+          {/* Communication Details */}
+          <p className="mt-2 underline uppercase font-semibold text-md">
+            Communication Details
+          </p>
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Email</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter Email"
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Mobile</label>
+              <InputMask
+                className="p-inputtext-sm"
+                mask="999-999-9999"
+                placeholder="Enter Mobile"
+                value={formData.mobile}
+                onChange={(e) => handleChange("mobile", e.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Secondary Mobile</label>
+              <InputMask
+                className="p-inputtext-sm"
+                mask="999-999-9999"
+                placeholder="Enter Secondary Mobile"
+                value={formData.secondaryMobile}
+                onChange={(e) => handleChange("secondaryMobile", e.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Mobile</label>
-            <InputMask
-              className="p-inputtext-sm"
-              mask="999-999-9999"
-              placeholder="Enter Mobile"
-              value={formData.mobile}
-              onChange={(e) => handleChange("mobile", e.value)}
-            />
-          </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Secondary Mobile</label>
-            <InputMask
-              className="p-inputtext-sm"
-              mask="999-999-9999"
-              placeholder="Enter Secondary Mobile"
-              value={formData.secondaryMobile}
-              onChange={(e) => handleChange("secondaryMobile", e.value)}
-            />
-          </div>
-        </div>
 
-        <div className="flex gap-3 mt-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Door No</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter Door Number"
-              value={formData.doorNo}
-              onChange={(e) => handleChange("doorNo", e.target.value)}
-            />
+          <div className="flex gap-3 mt-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Door No</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter Door Number"
+                value={formData.doorNo}
+                onChange={(e) => handleChange("doorNo", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Street</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter Street"
+                value={formData.street}
+                onChange={(e) => handleChange("street", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>City</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter City"
+                value={formData.city}
+                onChange={(e) => handleChange("city", e.target.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Street</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter Street"
-              value={formData.street}
-              onChange={(e) => handleChange("street", e.target.value)}
-            />
-          </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>City</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter City"
-              value={formData.city}
-              onChange={(e) => handleChange("city", e.target.value)}
-            />
-          </div>
-        </div>
 
-        <div className="flex gap-3 mt-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>District</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter District"
-              value={formData.district}
-              onChange={(e) => handleChange("district", e.target.value)}
-            />
+          <div className="flex gap-3 mt-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>District</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter District"
+                value={formData.district}
+                onChange={(e) => handleChange("district", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>State</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter State"
+                value={formData.state}
+                onChange={(e) => handleChange("state", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Country</label>
+              <InputText
+                type="text"
+                className="p-inputtext-sm"
+                placeholder="Enter Country"
+                value={formData.country}
+                onChange={(e) => handleChange("country", e.target.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>State</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter State"
-              value={formData.state}
-              onChange={(e) => handleChange("state", e.target.value)}
-            />
-          </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Country</label>
-            <InputText
-              type="text"
-              className="p-inputtext-sm"
-              placeholder="Enter Country"
-              value={formData.country}
-              onChange={(e) => handleChange("country", e.target.value)}
-            />
-          </div>
-        </div>
 
-        <Divider />
+          <Divider />
 
-        {/* Event Details */}
-        <p className="mt-2 underline uppercase font-semibold text-md">
-          Event Details
-        </p>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Event Type</label>
-            <Dropdown
-              options={eventTypes}
-              placeholder="Select Event Type"
-              className="p-inputtext-sm"
-              value={formData.eventType}
-              onChange={(e) => handleChange("eventType", e.value)}
-            />
+          {/* Event Details */}
+          <p className="mt-2 underline uppercase font-semibold text-md">
+            Event Details
+          </p>
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Event Type</label>
+              <Dropdown
+                options={eventTypes}
+                placeholder="Select Event Type"
+                className="p-inputtext-sm"
+                value={formData.eventType}
+                onChange={(e) => handleChange("eventType", e.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Lead Source</label>
+              <Dropdown
+                options={leadSources}
+                placeholder="Select Lead Source"
+                className="p-inputtext-sm"
+                value={formData.leadSource}
+                onChange={(e) => handleChange("leadSource", e.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Lead Source</label>
-            <Dropdown
-              options={leadSources}
-              placeholder="Select Lead Source"
-              className="p-inputtext-sm"
-              value={formData.leadSource}
-              onChange={(e) => handleChange("leadSource", e.value)}
-            />
+
+          <div className="flex gap-3 mt-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Budget (Optional)</label>
+              <InputText
+                type="number"
+                placeholder="Enter Budget"
+                className="p-inputtext-sm"
+                value={formData.budget}
+                onChange={(e) => handleChange("budget", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Event Date</label>
+              <Calendar
+                placeholder="Choose Event Date"
+                className="p-inputtext-sm"
+                value={formData.eventDate}
+                onChange={(e) => handleChange("eventDate", e.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="flex gap-3 mt-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Budget (Optional)</label>
-            <InputText
-              type="number"
-              placeholder="Enter Budget"
-              className="p-inputtext-sm"
-              value={formData.budget}
-              onChange={(e) => handleChange("budget", e.target.value)}
-            />
+          <Divider />
+
+          {/* Advance Details */}
+          <p className="mt-2 underline uppercase font-semibold text-md">
+            Advance Details
+          </p>
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Advance Payment</label>
+              <InputText
+                type="number"
+                placeholder="Enter Advance"
+                className="p-inputtext-sm"
+                value={formData.advance}
+                onChange={(e) => handleChange("advance", e.target.value)}
+              />
+            </div>
+            <div className="flex flex-1 flex-column gap-2">
+              <label>Payment Date</label>
+              <Calendar
+                placeholder="Amount Given Date"
+                className="p-inputtext-sm"
+                value={formData.paymentDate}
+                onChange={(e) => handleChange("paymentDate", e.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Event Date</label>
-            <Calendar
-              placeholder="Choose Event Date"
-              className="p-inputtext-sm"
-              value={formData.eventDate}
-              onChange={(e) => handleChange("eventDate", e.value)}
-            />
-          </div>
-        </div>
 
-        <Divider />
+          <Divider />
 
-        {/* Advance Details */}
-        <p className="mt-2 underline uppercase font-semibold text-md">
-          Advance Details
-        </p>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Advance Payment</label>
-            <InputText
-              type="number"
-              placeholder="Enter Advance"
-              className="p-inputtext-sm"
-              value={formData.advance}
-              onChange={(e) => handleChange("advance", e.target.value)}
-            />
-          </div>
-          <div className="flex flex-1 flex-column gap-2">
-            <label>Payment Date</label>
-            <Calendar
-              placeholder="Amount Given Date"
-              className="p-inputtext-sm"
-              value={formData.paymentDate}
-              onChange={(e) => handleChange("paymentDate", e.value)}
-            />
-          </div>
-        </div>
-
-        <Divider />
-
-        {/* Notes */}
-        <p className="mt-2 underline uppercase font-semibold text-md">
-          Other Important Notes
-        </p>
-        <Editor
-          value={formData.notes}
-          onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-          style={{ height: "320px" }}
-        />
-
-        {/* Actions */}
-        <div className="buttonActions gap-3 flex mt-3 justify-end">
-          <Button
-            icon="pi pi-times"
-            label="Clear"
-            outlined
-            className="w-[10rem]"
-            onClick={handleClear}
+          {/* Notes */}
+          <p className="mt-2 underline uppercase font-semibold text-md">
+            Other Important Notes
+          </p>
+          <Editor
+            value={formData.notes}
+            onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
+            style={{ height: "320px" }}
           />
-          <Button
-            icon="pi pi-save"
-            label="Save Lead"
-            className="w-[10rem]"
-            onClick={handleSave}
-          />
+
+          {/* Actions */}
+          <div className="buttonActions gap-3 flex mt-3 justify-end">
+            <Button
+              icon="pi pi-times"
+              label="Clear"
+              outlined
+              className="w-[10rem]"
+              onClick={handleClear}
+            />
+            <Button
+              icon="pi pi-save"
+              label="Save Lead"
+              className="w-[10rem]"
+              onClick={handleSave}
+            />
+          </div>
         </div>
       </div>
     </div>
