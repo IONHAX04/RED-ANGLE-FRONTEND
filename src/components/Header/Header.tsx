@@ -3,14 +3,22 @@ import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "primereact/avatar";
 import { Ripple } from "primereact/ripple";
 
-// Import lucide icons
+// Import lucide icons (aligned for photography project)
 import {
   Home,
-  LineChart,
-  Table,
+  Users,           // for leads & clients
+  UserPlus,         // add lead
+  List,             // view list
+  Activity,         // status indicator
+  Share2,           // assign lead
+  Search,           // track/view
+  FileText,         // quotation list
+  FilePlus2,        // add quotation
+  Eye,              // preview
+  Send,             // send to client
+  Menu as MenuIcon,
   ChevronDown,
   ChevronRight,
-  Menu as MenuIcon,
 } from "lucide-react";
 
 import "./Header.css";
@@ -37,47 +45,47 @@ const menuItems: MenuItem[] = [
   { label: "Dashboard", icon: <Home size={18} />, route: "/dashboard" },
   {
     label: "Leads",
-    icon: <LineChart size={18} />,
+    icon: <Users size={18} />,
     subItems: [
-      { label: "Add Lead", icon: <Table size={18} />, route: "/leads/add" },
-      { label: "View Lead", icon: <Table size={18} />, route: "/leads/view" },
+      { label: "Add Lead", icon: <UserPlus size={18} />, route: "/leads/add" },
+      { label: "View Lead", icon: <List size={18} />, route: "/leads/view" },
       {
         label: "Status Indicator",
-        icon: <Table size={18} />,
+        icon: <Activity size={18} />,
         route: "/leads/status",
       },
     ],
   },
   {
     label: "Assign Leads",
-    icon: <LineChart size={18} />,
+    icon: <Share2 size={18} />,
     subItems: [
-      { label: "Assign Lead", icon: <Table size={18} />, route: "/assign/add" },
-      { label: "Track Lead", icon: <Table size={18} />, route: "/assign/view" },
+      { label: "Assign Lead", icon: <UserPlus size={18} />, route: "/assign/add" },
+      { label: "Track Lead", icon: <Search size={18} />, route: "/assign/view" },
     ],
   },
   {
     label: "Quotation",
-    icon: <LineChart size={18} />,
+    icon: <FileText size={18} />,
     subItems: [
       {
         label: "List Quotation",
-        icon: <Table size={18} />,
+        icon: <List size={18} />,
         route: "/quotation/view",
       },
       {
         label: "Add Quotation",
-        icon: <Table size={18} />,
+        icon: <FilePlus2 size={18} />,
         route: "/quotation/add",
       },
       {
         label: "Preview",
-        icon: <Table size={18} />,
+        icon: <Eye size={18} />,
         route: "/quotation/preview",
       },
       {
         label: "Send To Client",
-        icon: <Table size={18} />,
+        icon: <Send size={18} />,
         route: "/quotation/sent",
       },
     ],
