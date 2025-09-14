@@ -17,6 +17,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Sidebar } from "primereact/sidebar";
 import LeadDetails from "../02-LeadsComponents/LeadDetails/LeadDetails";
+import AssignLeadComponents from "./AssignLeadComponents/AssignLeadComponents";
 
 interface Customer {
   id: number;
@@ -39,6 +40,9 @@ interface Customer {
 const AssignLeads: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const navigate = useNavigate();
+  console.log('navigate', navigate)
+  const [assignSidebar, setAssignSidebar] = useState(false); // ✅ new state
+
   const [viewDetailsSidebar, setViewDetailsSidebar] = useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
 
@@ -71,7 +75,7 @@ const AssignLeads: React.FC = () => {
   };
 
   const selectionCount = selectedCustomers.length;
-  const isAddDisabled = selectionCount > 0;
+  const isAddDisabled = selectionCount === 0;
   const isSingleSelected = selectionCount === 1;
   const isMultiSelected = selectionCount > 1;
   console.log("isMultiSelected", isMultiSelected);
@@ -85,7 +89,7 @@ const AssignLeads: React.FC = () => {
           icon="pi pi-plus"
           severity="success"
           disabled={isAddDisabled}
-          onClick={() => navigate("/leads/add")}
+          onClick={() => setAssignSidebar(true)}
         />
         <Button
           label="Details"
@@ -277,14 +281,15 @@ const AssignLeads: React.FC = () => {
           {leadDetails && <LeadDetails data={leadDetails} />}
         </Sidebar>
 
-        {/* <Sidebar
-          visible={updateLeadDetailsSidebar}
+        <Sidebar
+          visible={assignSidebar}
           position="right"
-          onHide={() => setUpdateLeadDetailsSidebar(false)}
+          header="Assign Employees"
+          onHide={() => setAssignSidebar(false)}
           style={{ width: "80vw" }}
         >
-          {leadDetails && <UpdateLeads data={leadDetails} />}
-        </Sidebar> */}
+          <AssignLeadComponents />
+        </Sidebar>
       </div>
     </div>
   );

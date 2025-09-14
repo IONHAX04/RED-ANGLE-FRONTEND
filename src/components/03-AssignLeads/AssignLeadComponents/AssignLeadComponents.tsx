@@ -54,7 +54,6 @@ const AssignLeadComponents: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">Assign Employees</h2>
 
       <DataTable
         value={employees}
@@ -65,41 +64,74 @@ const AssignLeadComponents: React.FC = () => {
         paginator
         rows={5}
         className="mb-4"
+        scrollable
+        showGridlines
       >
         <Column
           selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
+          headerStyle={{ minWidth: "3rem" }}
         ></Column>
         <Column
           header="S.No"
           body={(_, { rowIndex }) => rowIndex + 1}
-          style={{ width: "4rem" }}
+          style={{ minWidth: "4rem" }}
         />
-        <Column field="firstName" header="First Name" />
-        <Column field="lastName" header="Last Name" />
-        <Column field="email" header="Email" />
-        <Column field="mobile" header="Mobile" />
-        <Column field="city" header="City" />
-        <Column field="state" header="State" />
-        <Column field="country" header="Country" />
-        <Column field="workLocation" header="Work Location" />
-        <Column field="salesType" header="Sales Type" />
-        <Column field="availability" header="Availability" />
-        <Column field="experience" header="Experience" />
+        <Column
+          field="firstName"
+          header="First Name"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="lastName"
+          header="Last Name"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column field="email" header="Email" style={{ minWidth: "12rem" }} />
+        <Column field="mobile" header="Mobile" style={{ minWidth: "12rem" }} />
+        <Column field="city" header="City" style={{ minWidth: "12rem" }} />
+        <Column field="state" header="State" style={{ minWidth: "12rem" }} />
+        <Column
+          field="country"
+          header="Country"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="workLocation"
+          header="Work Location"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="salesType"
+          header="Sales Type"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="availability"
+          header="Availability"
+          style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="experience"
+          header="Experience"
+          style={{ minWidth: "12rem" }}
+        />
         <Column
           field="skills"
           header="Skills"
+          style={{ minWidth: "12rem" }}
           body={(rowData) => rowData.skills?.join(", ")}
         />
       </DataTable>
 
-      <Button
-        label="Assign"
-        icon="pi pi-check"
-        severity="success"
-        onClick={handleAssign}
-        disabled={employees.length === 0}
-      />
+      <div className="flex justify-end">
+        <Button
+          label="Assign"
+          icon="pi pi-check"
+          severity="success"
+          onClick={handleAssign}
+          disabled={employees.length === 0}
+        />
+      </div>
     </div>
   );
 };
