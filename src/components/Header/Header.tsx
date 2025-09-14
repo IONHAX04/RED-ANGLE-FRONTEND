@@ -10,7 +10,7 @@ import {
   List,
   Activity,
   Share2,
-  Search,
+  // Search,
   FileText,
   FilePlus2,
   Eye,
@@ -49,7 +49,11 @@ const menuItems: MenuItem[] = [
     icon: <Users size={18} />,
     subItems: [
       { label: "Add Lead", icon: <UserPlus size={18} />, route: "/leads/add" },
-      { label: "View Lead", icon: <List size={18} />, route: "/leads/view" },
+      {
+        label: "View & Track Lead",
+        icon: <List size={18} />,
+        route: "/leads/view",
+      },
       {
         label: "Status Indicator",
         icon: <Activity size={18} />,
@@ -66,11 +70,11 @@ const menuItems: MenuItem[] = [
         icon: <UserPlus size={18} />,
         route: "/assign/add",
       },
-      {
-        label: "Track Lead",
-        icon: <Search size={18} />,
-        route: "/assign/view",
-      },
+      // {
+      //   label: "Track Lead",
+      //   icon: <Search size={18} />,
+      //   route: "/assign/view",
+      // },
     ],
   },
   {
