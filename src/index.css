@@ -38,3 +38,7 @@ body {
 .p-sidebar .p-sidebar-header {
   padding: 10px 1rem;
 }
+
+.p-inputtext.p-chips-multiple-container {
+  width: 100%;
+}

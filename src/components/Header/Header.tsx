@@ -3,22 +3,23 @@ import { Link, useLocation } from "react-router-dom";
 import { Avatar } from "primereact/avatar";
 import { Ripple } from "primereact/ripple";
 
-// Import lucide icons (aligned for photography project)
 import {
   Home,
-  Users,           // for leads & clients
-  UserPlus,         // add lead
-  List,             // view list
-  Activity,         // status indicator
-  Share2,           // assign lead
-  Search,           // track/view
-  FileText,         // quotation list
-  FilePlus2,        // add quotation
-  Eye,              // preview
-  Send,             // send to client
+  Users,
+  UserPlus,
+  List,
+  Activity,
+  Share2,
+  Search,
+  FileText,
+  FilePlus2,
+  Eye,
+  Send,
   Menu as MenuIcon,
   ChevronDown,
   ChevronRight,
+  IdCard,
+  ClipboardList,
 } from "lucide-react";
 
 import "./Header.css";
@@ -60,8 +61,16 @@ const menuItems: MenuItem[] = [
     label: "Assign Leads",
     icon: <Share2 size={18} />,
     subItems: [
-      { label: "Assign Lead", icon: <UserPlus size={18} />, route: "/assign/add" },
-      { label: "Track Lead", icon: <Search size={18} />, route: "/assign/view" },
+      {
+        label: "Assign Lead",
+        icon: <UserPlus size={18} />,
+        route: "/assign/add",
+      },
+      {
+        label: "Track Lead",
+        icon: <Search size={18} />,
+        route: "/assign/view",
+      },
     ],
   },
   {
@@ -87,6 +96,22 @@ const menuItems: MenuItem[] = [
         label: "Send To Client",
         icon: <Send size={18} />,
         route: "/quotation/sent",
+      },
+    ],
+  },
+  {
+    label: "Employees",
+    icon: <Users size={18} />,
+    subItems: [
+      {
+        label: "Employee Details",
+        icon: <IdCard size={18} />,
+        route: "/employees/view",
+      },
+      {
+        label: "Attendance Report",
+        icon: <ClipboardList size={18} />,
+        route: "/employees/attendance-report",
       },
     ],
   },
