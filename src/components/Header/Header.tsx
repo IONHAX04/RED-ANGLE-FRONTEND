@@ -111,7 +111,7 @@ const menuItems: MenuItem[] = [
       {
         label: "Attendance Report",
         icon: <ClipboardList size={18} />,
-        route: "/employees/attendance-report",
+        route: "/employees/attendance",
       },
     ],
   },

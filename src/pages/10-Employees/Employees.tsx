@@ -120,6 +120,7 @@ const Employees: React.FC = () => {
         <Button
           className="gap-2"
           label="Attendance"
+          hidden
           icon={<CalendarCheck className="" />}
           severity="warning"
           disabled={!isSingleSelected}

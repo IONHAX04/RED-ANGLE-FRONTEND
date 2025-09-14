@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -21,24 +21,6 @@ import LeadDetails from "../LeadDetails/LeadDetails";
 import UpdateLeads from "../UpdateLeads/UpdateLeads";
 import SubHeader from "../../Header/SubHeader/SubHeader";
 
-interface Address {
-  doorNo: string;
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-}
-
-interface Country {
-  name: string;
-  code: string;
-}
-
-interface Representative {
-  name: string;
-  image: string;
-}
-
 interface Customer {
   id: number;
   firstName: string;
@@ -50,9 +32,11 @@ interface Customer {
   budget?: number;
   notes?: string;
   status: string;
-  country: Country;
-  representative: Representative;
-  address: Address;
+  country: string;
+  doorNo: string;
+  street: string;
+  city: string;
+  state: string;
 }
 
 const ViewLeads: React.FC = () => {
@@ -62,93 +46,6 @@ const ViewLeads: React.FC = () => {
   const [updateLeadDetailsSidebar, setUpdateLeadDetailsSidebar] =
     useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
-
-  const [customers] = useState<Customer[]>([
-    {
-      id: 1,
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@example.com",
-      mobile: "999-111-2222",
-      eventType: "Wedding",
-      leadSource: "Instagram",
-      budget: 50000,
-      notes: "Looking for candid shots",
-      status: "New",
-      country: { name: "India", code: "in" },
-      representative: { name: "Amy Elsner", image: "amyelsner.png" },
-      address: {
-        doorNo: "12A",
-        street: "MG Road",
-        city: "Bangalore",
-        state: "Karnataka",
-        country: "India",
-      },
-    },
-    {
-      id: 2,
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane@example.com",
-      mobile: "888-222-3333",
-      eventType: "Birthday",
-      leadSource: "Referral",
-      budget: 20000,
-      notes: "Outdoor photoshoot",
-      status: "Contacted",
-      country: { name: "USA", code: "us" },
-      representative: { name: "Anna Fali", image: "annafali.png" },
-      address: {
-        doorNo: "45",
-        street: "Main Street",
-        city: "New York",
-        state: "NY",
-        country: "USA",
-      },
-    },
-    {
-      id: 3,
-      firstName: "Arun",
-      lastName: "Kumar",
-      email: "arun@example.com",
-      mobile: "777-555-1212",
-      eventType: "Engagement",
-      leadSource: "Facebook",
-      budget: 30000,
-      notes: "Indoor studio setup",
-      status: "Proposal sent",
-      country: { name: "India", code: "in" },
-      representative: { name: "John Doe", image: "johndoe.png" },
-      address: {
-        doorNo: "23B",
-        street: "Anna Nagar",
-        city: "Chennai",
-        state: "Tamil Nadu",
-        country: "India",
-      },
-    },
-    {
-      id: 4,
-      firstName: "Maria",
-      lastName: "Gonzalez",
-      email: "maria@example.com",
-      mobile: "666-444-9999",
-      eventType: "Corporate Event",
-      leadSource: "Linkedin",
-      budget: 80000,
-      notes: "Full-day coverage",
-      status: "Booked",
-      country: { name: "Spain", code: "es" },
-      representative: { name: "Anna Fali", image: "annafali.png" },
-      address: {
-        doorNo: "101",
-        street: "Gran Via",
-        city: "Madrid",
-        state: "Madrid",
-        country: "Spain",
-      },
-    },
-  ]);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -296,12 +193,36 @@ const ViewLeads: React.FC = () => {
           {row.firstName} {row.lastName}
         </div>
         <div className="text-sm text-gray-600 line-clamp-1">
-          {row.eventType} -{row.address.doorNo}, {row.address.street},{" "}
-          {row.address.city}, {row.address.state}, {row.address.country}
+          {row.eventType} -{row.doorNo}, {row.street}, {row.city}, {row.state},{" "}
+          {row.country}
         </div>
       </div>
     );
   };
+
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("leads");
+    if (storedData) {
+      try {
+        const parsed: Customer[] = JSON.parse(storedData);
+
+        // 🔥 ensure every lead has a default status = "New" if not set
+        const updated = parsed.map((lead) => ({
+          ...lead,
+          status: lead.status || "New",
+        }));
+
+        setCustomers(updated);
+      } catch (err) {
+        console.error("Error parsing leads from localStorage:", err);
+        setCustomers([]);
+      }
+    } else {
+      setCustomers([]);
+    }
+  }, []);
 
   return (
     <div>

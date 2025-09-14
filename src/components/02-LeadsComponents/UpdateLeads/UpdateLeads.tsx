@@ -16,13 +16,11 @@ interface LeadDetailsProps {
     budget?: number;
     notes?: string;
     status: string;
-    address: {
-      doorNo: string;
-      street: string;
-      city: string;
-      state: string;
-      country: string;
-    };
+    doorNo: string;
+    street: string;
+    city: string;
+    state: string;
+    country: string;
   };
 }
 

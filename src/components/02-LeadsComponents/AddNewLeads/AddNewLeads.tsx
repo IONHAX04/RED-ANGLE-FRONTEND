@@ -1,14 +1,19 @@
 import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Divider } from "primereact/divider";
 import SubHeader from "../../Header/SubHeader/SubHeader";
+import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
 
 const AddNewLeads: React.FC = () => {
+  const navigate = useNavigate();
+  const toast = useRef<Toast>(null);
+
   const eventTypes = [
     { label: "Wedding", value: "wedding" },
     { label: "Engagement", value: "engagement" },
@@ -54,7 +59,37 @@ const AddNewLeads: React.FC = () => {
   };
 
   const handleSave = () => {
-    console.log("Payload:", formData);
+    try {
+      const existingLeads = JSON.parse(localStorage.getItem("leads") || "[]");
+      const updatedLeads = [...existingLeads, { ...formData, status: "New" }];
+
+      localStorage.setItem("leads", JSON.stringify(updatedLeads));
+
+      // ✅ Toast success
+      toast.current?.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Lead saved successfully!",
+        life: 2000,
+      });
+
+      // ✅ Clear form
+      handleClear();
+
+      // ✅ Navigate after short delay (so user sees toast)
+      setTimeout(() => {
+        navigate("/leads/view");
+      }, 2000);
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to save lead.",
+        life: 3000,
+      });
+    }
   };
 
   const handleClear = () => {
@@ -82,6 +117,7 @@ const AddNewLeads: React.FC = () => {
 
   return (
     <div>
+      <Toast ref={toast} />
       <SubHeader
         title="Add New Leads"
         subtitle={new Date().toLocaleDateString("en-US", {
