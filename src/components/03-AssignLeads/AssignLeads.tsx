@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { FilterMatchMode } from "primereact/api";
-import { DataTable } from "primereact/datatable";
+import SubHeader from "../Header/SubHeader/SubHeader";
+import { Toolbar } from "primereact/toolbar";
+import {
+  DataTable,
+  type DataTableFilterMeta,
+  type DataTableFilterMetaData,
+} from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
+import { useNavigate } from "react-router-dom";
+import { FilterMatchMode } from "primereact/api";
+import { Button } from "primereact/button";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { Tag } from "primereact/tag";
+import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import { Toolbar } from "primereact/toolbar";
-import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
-
-import type {
-  DataTableFilterMeta,
-  DataTableFilterMetaData,
-} from "primereact/datatable";
-import { useNavigate } from "react-router-dom";
-import LeadDetails from "../LeadDetails/LeadDetails";
-import UpdateLeads from "../UpdateLeads/UpdateLeads";
-import SubHeader from "../../Header/SubHeader/SubHeader";
+import LeadDetails from "../02-LeadsComponents/LeadDetails/LeadDetails";
 
 interface Customer {
   id: number;
@@ -39,12 +36,10 @@ interface Customer {
   state: string;
 }
 
-const ViewLeads: React.FC = () => {
+const AssignLeads: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const navigate = useNavigate();
   const [viewDetailsSidebar, setViewDetailsSidebar] = useState(false);
-  const [updateLeadDetailsSidebar, setUpdateLeadDetailsSidebar] =
-    useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
@@ -103,24 +98,6 @@ const ViewLeads: React.FC = () => {
               setViewDetailsSidebar(true);
             }
           }}
-        />
-        <Button
-          label="Update"
-          icon="pi pi-refresh"
-          severity="warning"
-          disabled={!isSingleSelected}
-          onClick={() => {
-            if (isSingleSelected) {
-              setLeadDetails(selectedCustomers[0]);
-              setUpdateLeadDetailsSidebar(true);
-            }
-          }}
-        />
-        <Button
-          label="Delete"
-          icon="pi pi-trash"
-          severity="danger"
-          disabled={selectionCount === 0}
         />
       </div>
     );
@@ -228,7 +205,7 @@ const ViewLeads: React.FC = () => {
   return (
     <div>
       <SubHeader
-        title="View Leads"
+        title="Assign Leads "
         subtitle={new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "short",
@@ -241,7 +218,6 @@ const ViewLeads: React.FC = () => {
         <DataTable
           value={customers}
           paginator
-           dataKey="id"   
           scrollable
           rows={5}
           rowsPerPageOptions={[5, 10, 25]}
@@ -251,6 +227,7 @@ const ViewLeads: React.FC = () => {
           selection={selectedCustomers}
           onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
           selectionMode="multiple"
+          dataKey="id"
           showGridlines
           className="mt-3 p-datatable-sm"
           emptyMessage="No leads found."
@@ -290,16 +267,6 @@ const ViewLeads: React.FC = () => {
             filterField="leadSource"
             style={{ minWidth: "12rem" }}
           />
-
-          <Column
-            field="status"
-            header="Status"
-            filterField="status"
-            style={{ minWidth: "10rem" }}
-            body={(row) => (
-              <Tag value={row.status} severity={getSeverity(row.status)} />
-            )}
-          />
         </DataTable>
         <Sidebar
           visible={viewDetailsSidebar}
@@ -310,37 +277,17 @@ const ViewLeads: React.FC = () => {
           {leadDetails && <LeadDetails data={leadDetails} />}
         </Sidebar>
 
-        <Sidebar
+        {/* <Sidebar
           visible={updateLeadDetailsSidebar}
           position="right"
           onHide={() => setUpdateLeadDetailsSidebar(false)}
           style={{ width: "80vw" }}
         >
           {leadDetails && <UpdateLeads data={leadDetails} />}
-        </Sidebar>
+        </Sidebar> */}
       </div>
     </div>
   );
 };
 
-// Helper for severity
-const getSeverity = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "lost":
-      return "danger";
-    case "booked":
-      return "success";
-    case "new":
-      return "info";
-    case "awaiting reply":
-      return "warning";
-    case "contacted":
-      return "secondary";
-    case "proposal sent":
-      return "info";
-    default:
-      return null;
-  }
-};
-
-export default ViewLeads;
+export default AssignLeads;

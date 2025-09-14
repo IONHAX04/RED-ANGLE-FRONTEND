@@ -7,6 +7,7 @@ import ViewLeads from "../components/02-LeadsComponents/ViewLeads/ViewLeads";
 import StatusIndicator from "../components/02-LeadsComponents/StatusIndicator/StatusIndicator";
 import Employees from "../pages/10-Employees/Employees";
 import OverallEmployeeAttendance from "../components/10-EmployeesComponents/OverallEmployeeAttendance/OverallEmployeeAttendance";
+import AssignLeads from "../components/03-AssignLeads/AssignLeads";
 
 const MainRoutes: React.FC = () => {
   return (
@@ -25,6 +26,10 @@ const MainRoutes: React.FC = () => {
             path="/employees/attendance"
             element={<OverallEmployeeAttendance />}
           />
+
+          {/* LEADS ASSIGN */}
+          <Route path="/assign/add" element={<AssignLeads />} />
+
         </Routes>
       </Header>
     </div>
