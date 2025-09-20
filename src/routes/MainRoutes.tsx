@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { type JSX } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Header from "../components/Header/Header";
 import Dashboard from "../pages/01-Dashboard/Dashboard";
 import AddNewLeads from "../components/02-LeadsComponents/AddNewLeads/AddNewLeads";
@@ -10,31 +10,118 @@ import OverallEmployeeAttendance from "../components/10-EmployeesComponents/Over
 import AssignLeads from "../components/03-AssignLeads/AssignLeads";
 import AddQuotation from "../components/04-QuotationComponents/AddQuotation/AddQuotation";
 import Login from "../pages/00-Login/Login";
+import Profile from "../pages/11-Profile/Profile";
+
+// Protected route component
+const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
+  const isLoggedIn = localStorage.getItem("userDetails");
+  const location = useLocation();
+
+  if (!isLoggedIn) {
+    // Redirect to login if not logged in
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+};
 
 const MainRoutes: React.FC = () => {
   return (
     <div>
       <Header>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          {/* Public route */}
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/leads/add" element={<AddNewLeads />} />
-          <Route path="/leads/view" element={<ViewLeads />} />
-          <Route path="/leads/status" element={<StatusIndicator />} />
+
+          {/* Protected routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leads/add"
+            element={
+              <ProtectedRoute>
+                <AddNewLeads />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leads/view"
+            element={
+              <ProtectedRoute>
+                <ViewLeads />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leads/status"
+            element={
+              <ProtectedRoute>
+                <StatusIndicator />
+              </ProtectedRoute>
+            }
+          />
 
           {/* EMPLOYEES */}
-          <Route path="/employees/view" element={<Employees />} />
+          <Route
+            path="/employees/view"
+            element={
+              <ProtectedRoute>
+                <Employees />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/employees/attendance"
-            element={<OverallEmployeeAttendance />}
+            element={
+              <ProtectedRoute>
+                <OverallEmployeeAttendance />
+              </ProtectedRoute>
+            }
           />
 
           {/* LEADS ASSIGN */}
-          <Route path="/assign/add" element={<AssignLeads />} />
+          <Route
+            path="/assign/add"
+            element={
+              <ProtectedRoute>
+                <AssignLeads />
+              </ProtectedRoute>
+            }
+          />
 
           {/* QUOTATION */}
-          <Route path="/quotation/add" element={<AddQuotation />} />
+          <Route
+            path="/quotation/add"
+            element={
+              <ProtectedRoute>
+                <AddQuotation />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* PROFILE */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Header>
     </div>

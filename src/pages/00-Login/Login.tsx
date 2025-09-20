@@ -4,6 +4,7 @@ import { Password } from "primereact/password";
 import { useNavigate } from "react-router";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
+import { loginUser } from "./Login.function";
 
 import BgImg from "../../assets/login/loginImg.jpg";
 
@@ -18,6 +19,43 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    try {
+      const payload = { email, password };
+      const result = await loginUser(payload);
+      console.log("result", result);
+
+      if (result.success) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Login Successful",
+          detail: "Welcome back!",
+          life: 3000,
+        });
+
+        // Optionally store employee info / token in localStorage
+        localStorage.setItem("userDetails", JSON.stringify(result.data[0]));
+
+        // Redirect to dashboard or employee page
+        navigate("/dashboard");
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Login Failed",
+          detail: result.message,
+          life: 3000,
+        });
+      }
+    } catch (error: any) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: error.message,
+        life: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect, type JSX } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Avatar } from "primereact/avatar";
 import { Ripple } from "primereact/ripple";
 import {
@@ -44,42 +44,84 @@ const menuItems: MenuItem[] = [
     icon: <Users size={18} />,
     subItems: [
       { label: "Add Lead", icon: <UserPlus size={18} />, route: "/leads/add" },
-      { label: "View & Track Lead", icon: <List size={18} />, route: "/leads/view" },
-      { label: "Status Indicator", icon: <Activity size={18} />, route: "/leads/status" },
+      {
+        label: "View & Track Lead",
+        icon: <List size={18} />,
+        route: "/leads/view",
+      },
+      {
+        label: "Status Indicator",
+        icon: <Activity size={18} />,
+        route: "/leads/status",
+      },
     ],
   },
   {
     label: "Assign Leads",
     icon: <Share2 size={18} />,
-    subItems: [{ label: "Assign Lead", icon: <UserPlus size={18} />, route: "/assign/add" }],
+    subItems: [
+      {
+        label: "Assign Lead",
+        icon: <UserPlus size={18} />,
+        route: "/assign/add",
+      },
+    ],
   },
   {
     label: "Quotation",
     icon: <FileText size={18} />,
-    subItems: [{ label: "Add Quotation", icon: <FilePlus2 size={18} />, route: "/quotation/add" }],
+    subItems: [
+      {
+        label: "Add Quotation",
+        icon: <FilePlus2 size={18} />,
+        route: "/quotation/add",
+      },
+    ],
   },
   {
     label: "Employees",
     icon: <Users size={18} />,
     subItems: [
-      { label: "Employee Details", icon: <IdCard size={18} />, route: "/employees/view" },
-      { label: "Attendance Report", icon: <ClipboardList size={18} />, route: "/employees/attendance" },
+      {
+        label: "Employee Details",
+        icon: <IdCard size={18} />,
+        route: "/employees/view",
+      },
+      {
+        label: "Attendance Report",
+        icon: <ClipboardList size={18} />,
+        route: "/employees/attendance",
+      },
     ],
   },
 ];
 
-const userInfo = {
-  name: "Amy Elsner",
-  avatar: "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png",
-};
-
 const Header = ({ children }: NavProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [openMenus, setOpenMenus] = useState<Record<number, boolean>>({});
+  const [userInfo, setUserInfo] = useState<{ name: string; avatar: string }>({
+    name: "",
+    avatar: "",
+  });
 
   // 🚫 Routes where sidebar should NOT show
   const hideSidebarRoutes = ["/login", "/forgotpassword"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
+
+  // Load user info from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userDetails");
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      console.log("parsed", parsed);
+      setUserInfo({
+        name: `${parsed.firstName} ${parsed.lastName}`,
+        avatar:
+          "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png", // you can replace with real avatar URL if available
+      });
+    }
+  }, []);
 
   // Toggle menu open/close
   const toggleMenu = (index: number) => {
@@ -112,7 +154,11 @@ const Header = ({ children }: NavProps) => {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <div id="app-sidebar" className="surface-section h-full flex-shrink-0 shadow-xl select-none" style={{ width: "280px" }}>
+      <div
+        id="app-sidebar"
+        className="surface-section h-full flex-shrink-0 shadow-xl select-none"
+        style={{ width: "280px" }}
+      >
         <div className="flex flex-col h-full">
           <div className="flex items-center px-3 pt-3 flex-shrink-0 gap-2">
             <MenuIcon size={20} className="text-gray-700" />
@@ -135,14 +181,20 @@ const Header = ({ children }: NavProps) => {
                           {item.icon}
                           <span className="font-medium">{item.label}</span>
                         </div>
-                        {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                        {isOpen ? (
+                          <ChevronDown size={16} />
+                        ) : (
+                          <ChevronRight size={16} />
+                        )}
                         <Ripple />
                       </div>
                     ) : (
                       <Link
                         to={item.route!}
                         className={`flex items-center gap-2 px-3 py-2 rounded w-full transition-colors duration-150 ${
-                          isActive(item.route) ? "bg-[#3B82F6] text-white" : "text-gray-700 hover:bg-gray-100"
+                          isActive(item.route)
+                            ? "bg-[#3B82F6] text-white"
+                            : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
                         {item.icon}
@@ -151,17 +203,25 @@ const Header = ({ children }: NavProps) => {
                       </Link>
                     )}
                     {hasSub && (
-                      <ul className={`overflow-hidden transition-all duration-300 pl-4 ${isOpen ? "max-h-40 mt-1" : "max-h-0"}`}>
+                      <ul
+                        className={`overflow-hidden transition-all duration-300 pl-4 ${
+                          isOpen ? "max-h-40 mt-1" : "max-h-0"
+                        }`}
+                      >
                         {item.subItems!.map((subItem, subIndex) => (
                           <li key={subIndex} className="mb-1">
                             <Link
                               to={subItem.route!}
                               className={`flex items-center gap-2 px-3 py-1 rounded w-full transition-colors duration-150 ${
-                                isActive(subItem.route) ? "bg-[#3B82F6] text-white" : "text-gray-700 hover:bg-gray-100"
+                                isActive(subItem.route)
+                                  ? "bg-[#3B82F6] text-white"
+                                  : "text-gray-700 hover:bg-gray-100"
                               }`}
                             >
                               {subItem.icon}
-                              <span className="font-medium">{subItem.label}</span>
+                              <span className="font-medium">
+                                {subItem.label}
+                              </span>
                               <Ripple />
                             </Link>
                           </li>
@@ -174,9 +234,13 @@ const Header = ({ children }: NavProps) => {
             </ul>
           </div>
 
+          {/* User Profile */}
           <div className="mt-auto">
             <hr className="mb-3 border-none surface-border" />
-            <div className="m-3 flex items-center gap-2 cursor-pointer rounded text-gray-700 hover:bg-gray-100 transition-colors duration-150 p-2">
+            <div
+              className="m-3 flex items-center gap-2 cursor-pointer rounded text-gray-700 hover:bg-gray-100 transition-colors duration-150 p-2"
+              onClick={() => navigate("/profile")}
+            >
               <Avatar image={userInfo.avatar} shape="circle" />
               <span className="font-semibold">{userInfo.name}</span>
             </div>
@@ -185,7 +249,10 @@ const Header = ({ children }: NavProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="w-[100%] overflow-auto" style={{ scrollbarWidth: "thin" }}>
+      <div
+        className="w-[100%] overflow-auto"
+        style={{ scrollbarWidth: "thin" }}
+      >
         {children}
       </div>
     </div>

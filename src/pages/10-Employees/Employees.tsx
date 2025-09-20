@@ -5,17 +5,12 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
-import { Dropdown } from "primereact/dropdown";
-import { Calendar } from "primereact/calendar";
 import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
 
-import type {
-  DataTableFilterMeta,
-  DataTableFilterMetaData,
-} from "primereact/datatable";
+import type { DataTableFilterMeta } from "primereact/datatable";
 import { useNavigate } from "react-router-dom";
 import AddNewEmployees from "../../components/10-EmployeesComponents/AddNewEmployees/AddNewEmployees";
 import SubHeader from "../../components/Header/SubHeader/SubHeader";
@@ -46,7 +41,12 @@ const Employees: React.FC = () => {
   const fetchEmployees = async () => {
     try {
       const data = await getEmployees();
-      setEmployees(data);
+      // Add fullName field
+      const dataWithFullName = data.map((emp) => ({
+        ...emp,
+        fullName: `${emp.firstName} ${emp.lastName}`,
+      }));
+      setEmployees(dataWithFullName);
     } catch (error: any) {
       toast.current?.show({
         severity: "error",
@@ -93,20 +93,6 @@ const Employees: React.FC = () => {
     }));
   };
 
-  const onStatusFilterChange = (value: string | null) => {
-    setFilters((prev) => ({
-      ...prev,
-      status: { ...prev.status, value },
-    }));
-  };
-
-  const onLeadSourceFilterChange = (value: string | null) => {
-    setFilters((prev) => ({
-      ...prev,
-      leadSource: { ...prev.leadSource, value },
-    }));
-  };
-
   const selectionCount = selectedCustomers.length;
   const isAddDisabled = selectionCount > 0;
   const isSingleSelected = selectionCount === 1;
@@ -122,7 +108,7 @@ const Employees: React.FC = () => {
         onClick={() => setAddEmployeeSidebar(true)}
       />
       <Button
-        label="Details"
+        label="Update"
         icon={<Eye />}
         severity="info"
         className="gap-2"
@@ -166,49 +152,6 @@ const Employees: React.FC = () => {
           />
         </IconField>
       </div>
-
-      <div className="flex-1">
-        <Dropdown
-          value={(filters["status"] as DataTableFilterMetaData)?.value || null}
-          options={[
-            "New",
-            "Contacted",
-            "Booked",
-            "Lost",
-            "Awaiting Reply",
-            "Proposal sent",
-          ]}
-          placeholder="All Status"
-          className="w-full"
-          onChange={(e) => onStatusFilterChange(e.value)}
-          showClear
-        />
-      </div>
-
-      <div className="flex-1">
-        <Dropdown
-          value={
-            (filters["leadSource"] as DataTableFilterMetaData)?.value || null
-          }
-          options={[
-            { label: "Instagram", value: "Instagram" },
-            { label: "LinkedIn", value: "Linkedin" },
-            { label: "Facebook", value: "Facebook" },
-            { label: "Referral", value: "Referral" },
-            { label: "Other", value: "other" },
-          ]}
-          optionLabel="label"
-          optionValue="value"
-          className="w-full"
-          placeholder="All Sources"
-          onChange={(e) => onLeadSourceFilterChange(e.value)}
-          showClear
-        />
-      </div>
-
-      <div className="flex-1">
-        <Calendar placeholder="Booking Date" className="w-full" />
-      </div>
     </div>
   );
 
@@ -235,6 +178,7 @@ const Employees: React.FC = () => {
           header={header}
           filters={filters}
           onFilter={(e) => setFilters(e.filters)}
+          globalFilterFields={["fullName", "email", "mobile", "salesType"]}
           selection={selectedCustomers}
           onSelectionChange={(e) => setSelectedCustomers(e.value as Employee[])}
           selectionMode="multiple"
@@ -242,8 +186,6 @@ const Employees: React.FC = () => {
           showGridlines
           className="mt-3 p-datatable-sm"
           emptyMessage="No employees found."
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} employees"
         >
           <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
           <Column
@@ -253,7 +195,7 @@ const Employees: React.FC = () => {
           />
           <Column
             header="Employee Name"
-            body={(row: Employee) => `${row.firstName} ${row.lastName}`}
+            field="fullName" // use fullName here
             style={{ minWidth: "18rem" }}
           />
           <Column
