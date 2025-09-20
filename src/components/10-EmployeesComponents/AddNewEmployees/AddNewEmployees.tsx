@@ -8,7 +8,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Chips } from "primereact/chips";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
-import { addEmployee } from "./AddNewEmployees.function";
+import { addEmployee, updateEmployee } from "./AddNewEmployees.function";
 
 interface AddNewEmployeesProps {
   onSuccess?: () => void;
@@ -20,6 +20,8 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
   initialData,
 }) => {
   const toast = useRef<Toast>(null);
+
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -96,18 +98,25 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
     try {
       if (!validateForm()) return;
 
-      // Call the backend API
-      const result = await addEmployee(formData);
-      console.log('result', result)
+      let result;
+      if (isEditMode) {
+        // 👇 call update API
+        result = await updateEmployee(initialData.id, formData);
+      } else {
+        // 👇 call add API
+        result = await addEmployee(formData);
+      }
 
       if (result.success) {
         toast.current?.show({
           severity: "success",
           summary: "Success",
-          detail: "Employee added successfully!",
+          detail: isEditMode
+            ? "Employee updated successfully!"
+            : "Employee added successfully!",
         });
 
-        handleClear();
+        if (!isEditMode) handleClear();
 
         if (onSuccess) {
           setTimeout(() => onSuccess(), 500);
@@ -116,7 +125,7 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
         toast.current?.show({
           severity: "error",
           summary: "Error",
-          detail: result.message || "Failed to add employee",
+          detail: result.message || "Failed to save employee",
         });
       }
     } catch (error: any) {
@@ -124,7 +133,7 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: error.message || "Failed to add employee",
+        detail: error.message || "Failed to save employee",
       });
     }
   };
@@ -162,6 +171,7 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
+      setIsEditMode(true); // 👈 mark edit mode
     }
   }, [initialData]);
 
@@ -381,16 +391,18 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
 
           {/* Actions */}
           <div className="buttonActions gap-3 flex mt-3 justify-end">
-            <Button
-              icon="pi pi-times"
-              label="Clear"
-              outlined
-              className="w-[10rem]"
-              onClick={handleClear}
-            />
+            {!isEditMode && (
+              <Button
+                icon="pi pi-times"
+                label="Clear"
+                outlined
+                className="w-[10rem]"
+                onClick={handleClear}
+              />
+            )}
             <Button
               icon="pi pi-save"
-              label="Save Employee"
+              label={isEditMode ? "Update Employee" : "Save Employee"} // 👈 button label change
               className="w-[15rem]"
               onClick={handleSave}
             />

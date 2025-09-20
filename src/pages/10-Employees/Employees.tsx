@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -10,6 +10,7 @@ import { Calendar } from "primereact/calendar";
 import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
+import { Toast } from "primereact/toast";
 
 import type {
   DataTableFilterMeta,
@@ -20,25 +21,69 @@ import AddNewEmployees from "../../components/10-EmployeesComponents/AddNewEmplo
 import SubHeader from "../../components/Header/SubHeader/SubHeader";
 import { CalendarCheck, Eye, Plus, Trash2 } from "lucide-react";
 import Attendance from "../../components/10-EmployeesComponents/Attendance/Attendance";
-import { getEmployees } from "./Employee.function";
+import { getEmployees, deleteEmployee } from "./Employee.function";
 
 import type { Employee } from "./Employees.interface";
 
 const Employees: React.FC = () => {
   const navigate = useNavigate();
-  console.log("navigate", navigate);
+  const toast = useRef<Toast>(null);
+
   const [selectedCustomers, setSelectedCustomers] = useState<Employee[]>([]);
-  const [addEmployeeSidebar, setAddEmployeeSidebar] = useState<boolean>(false);
+  const [addEmployeeSidebar, setAddEmployeeSidebar] = useState(false);
   const [employeeAttendanceSidebar, setEmployeeAttendanceSidebar] =
-    useState<boolean>(false);
+    useState(false);
   const [viewDetailsSidebar, setViewDetailsSidebar] = useState(false);
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
     leadSource: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
+
+  const fetchEmployees = async () => {
+    try {
+      const data = await getEmployees();
+      setEmployees(data);
+    } catch (error: any) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: error.message,
+        life: 3000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, [addEmployeeSidebar, viewDetailsSidebar]);
+
+  // ✅ Delete selected employees
+  const handleDelete = async () => {
+    try {
+      for (const emp of selectedCustomers) {
+        await deleteEmployee(emp.id);
+      }
+      toast.current?.show({
+        severity: "success",
+        summary: "Deleted",
+        detail: `${selectedCustomers.length} employee(s) deleted successfully`,
+        life: 3000,
+      });
+      setSelectedCustomers([]);
+      fetchEmployees();
+    } catch (error: any) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: error.message,
+        life: 3000,
+      });
+    }
+  };
 
   const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -65,52 +110,48 @@ const Employees: React.FC = () => {
   const selectionCount = selectedCustomers.length;
   const isAddDisabled = selectionCount > 0;
   const isSingleSelected = selectionCount === 1;
-  const isMultiSelected = selectionCount > 1;
-  console.log("isMultiSelected", isMultiSelected);
 
-  const rightToolbarTemplate = () => {
-    return (
-      <div className="flex gap-2">
-        <Button
-          label="Add"
-          icon={<Plus className="" />}
-          severity="success"
-          className="gap-2"
-          disabled={isAddDisabled}
-          onClick={() => setAddEmployeeSidebar(true)}
-        />
-        <Button
-          label="Details"
-          icon={<Eye className="" />}
-          severity="info"
-          className="gap-2"
-          disabled={!isSingleSelected}
-          onClick={() => {
-            if (isSingleSelected) {
-              setEditEmployee(selectedCustomers[0]);
-              setViewDetailsSidebar(true);
-            }
-          }}
-        />
-        <Button
-          className="gap-2"
-          label="Attendance"
-          hidden
-          icon={<CalendarCheck className="" />}
-          severity="warning"
-          disabled={!isSingleSelected}
-          onClick={() => setEmployeeAttendanceSidebar(true)}
-        />
-        <Button
-          label="Delete"
-          className="gap-2"
-          icon={<Trash2 className="" />}
-          severity="danger"
-          disabled={selectionCount === 0}
-        />
-      </div>
-    );
-  };
+  const rightToolbarTemplate = () => (
+    <div className="flex gap-2">
+      <Button
+        label="Add"
+        icon={<Plus />}
+        severity="success"
+        className="gap-2"
+        disabled={isAddDisabled}
+        onClick={() => setAddEmployeeSidebar(true)}
+      />
+      <Button
+        label="Details"
+        icon={<Eye />}
+        severity="info"
+        className="gap-2"
+        disabled={!isSingleSelected}
+        onClick={() => {
+          if (isSingleSelected) {
+            setEditEmployee(selectedCustomers[0]);
+            setViewDetailsSidebar(true);
+          }
+        }}
+      />
+      <Button
+        label="Attendance"
+        hidden
+        icon={<CalendarCheck />}
+        severity="warning"
+        disabled={!isSingleSelected}
+        onClick={() => setEmployeeAttendanceSidebar(true)}
+      />
+      <Button
+        label="Delete"
+        className="gap-2"
+        icon={<Trash2 />}
+        severity="danger"
+        disabled={selectionCount === 0}
+        onClick={handleDelete}
+      />
+    </div>
+  );
 
   const header = (
     <div className="flex gap-3">
@@ -171,24 +212,9 @@ const Employees: React.FC = () => {
     </div>
   );
 
-  const [employees, setEmployees] = useState<Employee[]>([]);
-
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const data = await getEmployees();
-        console.log("data", data);
-        setEmployees(data.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchEmployees();
-  }, [addEmployeeSidebar, viewDetailsSidebar]);
-
   return (
     <div>
+      <Toast ref={toast} />
       <SubHeader
         title="Employee Details"
         subtitle={new Date().toLocaleDateString("en-US", {
@@ -212,18 +238,14 @@ const Employees: React.FC = () => {
           selection={selectedCustomers}
           onSelectionChange={(e) => setSelectedCustomers(e.value as Employee[])}
           selectionMode="multiple"
-          dataKey="email"
+          dataKey="id"
           showGridlines
           className="mt-3 p-datatable-sm"
           emptyMessage="No employees found."
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} employees"
         >
-          <Column
-            selectionMode="multiple"
-            headerStyle={{ width: "3rem" }}
-          ></Column>
-
+          <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
           <Column
             header="S.No"
             body={(_, { rowIndex }) => rowIndex + 1}
@@ -252,6 +274,7 @@ const Employees: React.FC = () => {
           />
         </DataTable>
       </div>
+
       <Sidebar
         visible={addEmployeeSidebar}
         position="right"
@@ -259,8 +282,21 @@ const Employees: React.FC = () => {
         style={{ width: "80vw" }}
         onHide={() => setAddEmployeeSidebar(false)}
       >
-        <AddNewEmployees onSuccess={() => setAddEmployeeSidebar(false)} />
+        <AddNewEmployees
+          onSuccess={() => {
+            setAddEmployeeSidebar(false);
+            setSelectedCustomers([]);
+            fetchEmployees();
+            toast.current?.show({
+              severity: "success",
+              summary: "Success",
+              detail: "Employee added successfully",
+              life: 3000,
+            });
+          }}
+        />
       </Sidebar>
+
       <Sidebar
         visible={viewDetailsSidebar}
         position="right"
@@ -270,7 +306,17 @@ const Employees: React.FC = () => {
       >
         <AddNewEmployees
           initialData={editEmployee}
-          onSuccess={() => setViewDetailsSidebar(false)}
+          onSuccess={() => {
+            setViewDetailsSidebar(false);
+            setSelectedCustomers([]);
+            fetchEmployees();
+            toast.current?.show({
+              severity: "success",
+              summary: "Updated",
+              detail: "Employee updated successfully",
+              life: 3000,
+            });
+          }}
         />
       </Sidebar>
 

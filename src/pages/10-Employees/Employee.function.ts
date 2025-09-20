@@ -1,26 +1,84 @@
 import axios from "axios";
 import type { Employee } from "./Employees.interface";
 
-// Example: Adjust baseURL to your backend API
-const API_BASE_URL = "http://localhost:5000/api/v1/employees";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const getEmployees = async (): Promise<{ data: Employee[] }> => {
-  const response = await axios.get<{ data: Employee[] }>(API_BASE_URL);
-  return response.data;
+// ✅ Get all employees
+export const getEmployees = async (): Promise<Employee[]> => {
+  try {
+    const response = await axios.get(`${API_URL}/routes/employees`);
+    return response.data.data; // assuming API response { success, data: [...] }
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch employees"
+    );
+  }
 };
 
-// You can later add more functions:
-export const addEmployee = async (employee: Employee) => {
-  return axios.post(API_BASE_URL, employee);
+// ✅ Get single employee by ID
+export const getEmployeeById = async (id: number): Promise<Employee> => {
+  try {
+    const response = await axios.get(`${API_URL}/routes/employees/${id}`);
+    return response.data.data; // assuming API response { success, data: {...} }
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch employee"
+    );
+  }
 };
 
+// ✅ Add new employee
+export const addEmployee = async (employeeData: Partial<Employee>) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/routes/addEmployee`,
+      employeeData,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || error.message || "Failed to add employee"
+    );
+  }
+};
+
+// ✅ Update employee
 export const updateEmployee = async (
   id: number,
-  employee: Partial<Employee>
+  employeeData: Partial<Employee>
 ) => {
-  return axios.put(`${API_BASE_URL}/${id}`, employee);
+  try {
+    const response = await axios.put(
+      `${API_URL}/routes/employees/${id}`,
+      employeeData
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to update employee"
+    );
+  }
 };
 
+// ✅ Delete employee
 export const deleteEmployee = async (id: number) => {
-  return axios.delete(`${API_BASE_URL}/${id}`);
+  try {
+    const response = await axios.delete(`${API_URL}/routes/employees/${id}`);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to delete employee"
+    );
+  }
 };
