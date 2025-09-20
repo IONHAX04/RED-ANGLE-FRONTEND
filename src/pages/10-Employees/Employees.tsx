@@ -20,34 +20,9 @@ import AddNewEmployees from "../../components/10-EmployeesComponents/AddNewEmplo
 import SubHeader from "../../components/Header/SubHeader/SubHeader";
 import { CalendarCheck, Eye, Plus, Trash2 } from "lucide-react";
 import Attendance from "../../components/10-EmployeesComponents/Attendance/Attendance";
+import { getEmployees } from "./Employee.function";
 
-interface Employee {
-  firstName: string;
-  lastName: string;
-  email: string;
-  mobile: string;
-  secondaryMobile?: string;
-  doorNo?: string;
-  street?: string;
-  city?: string;
-  district?: string;
-  state?: string;
-  country?: string;
-  workLocation?: string;
-  salesType?: string;
-  availability?: string;
-  experience?: number;
-  skills?: string[];
-  portfolio?: string;
-  reason?: string;
-  eventType?: string;
-  leadSource?: string;
-  budget?: string | number;
-  eventDate?: Date | null;
-  advance?: string;
-  paymentDate?: Date | null;
-  notes?: string;
-}
+import type { Employee } from "./Employees.interface";
 
 const Employees: React.FC = () => {
   const navigate = useNavigate();
@@ -199,11 +174,18 @@ const Employees: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
-    const storedEmployees = JSON.parse(
-      localStorage.getItem("employees") || "[]"
-    );
-    setEmployees(storedEmployees);
-  }, [addEmployeeSidebar]); // refresh when sidebar closes after adding
+    const fetchEmployees = async () => {
+      try {
+        const data = await getEmployees();
+        console.log("data", data);
+        setEmployees(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchEmployees();
+  }, [addEmployeeSidebar, viewDetailsSidebar]);
 
   return (
     <div>
