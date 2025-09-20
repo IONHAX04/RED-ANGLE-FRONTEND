@@ -1,7 +1,106 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SubHeader from "../../Header/SubHeader/SubHeader";
+import { Toolbar } from "primereact/toolbar";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Calendar } from "primereact/calendar";
+import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
+import axios from "axios";
+
+interface Employee {
+  id: number;
+  name: string;
+  date: string;
+  punchIn: string;
+  punchOut: string;
+  totalHours: string;
+  status: string;
+}
 
 const OverallEmployeeAttendance: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+
+  const dt = useRef<DataTable<any>>(null);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, []);
+
+  const fetchAttendance = async () => {
+    try {
+      const response = await axios.get(
+        import.meta.env.VITE_API_URL + "/attendance/get"
+      );
+      console.log("response", response);
+      // Assuming API returns array of attendance records
+      setEmployees(response.data.data);
+    } catch (error) {
+      console.error("Error fetching attendance:", error);
+    }
+  };
+
+  // Toolbar contents
+  const leftContents = (
+    <div className="flex gap-2">
+      <span className="p-input-icon-left">
+        <InputText
+          placeholder="Global Search"
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        />
+      </span>
+
+      <Calendar
+        value={fromDate}
+        onChange={(e) => setFromDate(e.value as Date)}
+        placeholder="From"
+        dateFormat="yy-mm-dd"
+      />
+      <Calendar
+        value={toDate}
+        onChange={(e) => setToDate(e.value as Date)}
+        placeholder="To"
+        dateFormat="yy-mm-dd"
+      />
+
+      <Dropdown
+        value={statusFilter}
+        onChange={(e) => setStatusFilter(e.value)}
+        options={[
+          { label: "All", value: null },
+          { label: "Present", value: "Present" },
+          { label: "Absent", value: "Absent" },
+        ]}
+        placeholder="Status"
+        className="w-32"
+      />
+    </div>
+  );
+
+  const rightContents = (
+    <Button
+      label="Export CSV"
+      icon="pi pi-download"
+      className="p-button-sm"
+      onClick={() => dt.current?.exportCSV()}
+    />
+  );
+
+  // Filter employees by date and status
+  const filteredEmployees = employees.filter((emp) => {
+    const empDate = new Date(emp.date);
+    const afterFrom = fromDate ? empDate >= fromDate : true;
+    const beforeTo = toDate ? empDate <= toDate : true;
+    const statusMatch = statusFilter ? emp.status === statusFilter : true;
+    return afterFrom && beforeTo && statusMatch;
+  });
+
   return (
     <div>
       <SubHeader
@@ -13,7 +112,59 @@ const OverallEmployeeAttendance: React.FC = () => {
           year: "numeric",
         })}
       />
-      
+
+      <div className="m-3 shadow-lg p-3">
+        <Toolbar left={leftContents} right={rightContents} />
+
+        <div className="flex my-3 gap-3">
+          <div className="flex-1 bg-[#f9fafb] border-1 border-[#e5e7eb] p-2 rounded-md">
+            <p>Total Employees</p>
+            <p>{filteredEmployees.length}</p>
+          </div>
+          <div className="flex-1 bg-[#f9fafb] border-1 border-[#e5e7eb] p-2 rounded-md">
+            <p>Present</p>
+            <p>
+              {filteredEmployees.filter((e) => e.status === "Present").length}
+            </p>
+          </div>
+          <div className="flex-1 bg-[#f9fafb] border-1 border-[#e5e7eb] p-2 rounded-md">
+            <p>Absent</p>
+            <p>
+              {filteredEmployees.filter((e) => e.status === "Absent").length}
+            </p>
+          </div>
+          <div className="flex-1 bg-[#f9fafb] border-1 border-[#e5e7eb] p-2 rounded-md">
+            <p>Average Hours</p>
+            <p>
+              {(
+                filteredEmployees.reduce((acc, curr) => {
+                  const hours = parseInt(curr.totalHours);
+                  return acc + (isNaN(hours) ? 0 : hours);
+                }, 0) / (filteredEmployees.length || 1)
+              ).toFixed(1)}
+              h
+            </p>
+          </div>
+        </div>
+
+        <DataTable
+          ref={dt}
+          value={filteredEmployees}
+          paginator
+          rows={10}
+          globalFilter={globalFilter}
+          showGridlines
+          scrollable
+        >
+          <Column field="id" header="S.No" />
+          <Column field="name" header="Employee Name" />
+          <Column field="date" header="Date" />
+          <Column field="punch_in_time" header="Punch In" />
+          <Column field="punch_out_time" header="Punch Out" />
+          <Column field="total_hours" header="Total Hours" />
+          <Column field="status" header="Status" />
+        </DataTable>
+      </div>
     </div>
   );
 };

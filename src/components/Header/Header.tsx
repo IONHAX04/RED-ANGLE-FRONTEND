@@ -18,6 +18,7 @@ import {
   Menu as MenuIcon,
   LogOut,
   Fingerprint,
+  CalendarCheck,
 } from "lucide-react";
 
 import "./Header.css";
@@ -95,10 +96,18 @@ const menuItems: MenuItem[] = [
         icon: <ClipboardList size={18} />,
         route: "/employees/attendance",
       },
+      {
+        label: "Leave Request",
+        icon: <CalendarCheck size={18} />,
+        route: "/employees/leave-request",
+      },
     ],
   },
-  { label: "Attendance", icon: <Fingerprint size={18} />, route: "/attendance" },
-
+  {
+    label: "Attendance",
+    icon: <Fingerprint size={18} />,
+    route: "/attendance",
+  },
 ];
 
 const Header = ({ children }: NavProps) => {
