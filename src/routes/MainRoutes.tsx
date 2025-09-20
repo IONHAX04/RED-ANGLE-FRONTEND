@@ -8,6 +8,8 @@ import StatusIndicator from "../components/02-LeadsComponents/StatusIndicator/St
 import Employees from "../pages/10-Employees/Employees";
 import OverallEmployeeAttendance from "../components/10-EmployeesComponents/OverallEmployeeAttendance/OverallEmployeeAttendance";
 import AssignLeads from "../components/03-AssignLeads/AssignLeads";
+import AddQuotation from "../components/04-QuotationComponents/AddQuotation/AddQuotation";
+import Login from "../pages/00-Login/Login";
 
 const MainRoutes: React.FC = () => {
   return (
@@ -15,6 +17,7 @@ const MainRoutes: React.FC = () => {
       <Header>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/leads/add" element={<AddNewLeads />} />
           <Route path="/leads/view" element={<ViewLeads />} />
@@ -30,6 +33,8 @@ const MainRoutes: React.FC = () => {
           {/* LEADS ASSIGN */}
           <Route path="/assign/add" element={<AssignLeads />} />
 
+          {/* QUOTATION */}
+          <Route path="/quotation/add" element={<AddQuotation />} />
         </Routes>
       </Header>
     </div>

@@ -42,3 +42,12 @@ body {
 .p-inputtext.p-chips-multiple-container {
   width: 100%;
 }
+
+
+.p-password .p-input-icon svg {
+  margin-top: -10px;
+}
+
+.p-icon-field.p-icon-field-right {
+  width: 100%;
+}

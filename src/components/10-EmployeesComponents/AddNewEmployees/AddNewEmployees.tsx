@@ -8,6 +8,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Chips } from "primereact/chips";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
+import { addEmployee } from "./AddNewEmployees.function";
 
 interface AddNewEmployeesProps {
   onSuccess?: () => void;
@@ -91,49 +92,39 @@ const AddNewEmployees: React.FC<AddNewEmployeesProps> = ({
     return true;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       if (!validateForm()) return;
 
-      const existingEmployees = JSON.parse(
-        localStorage.getItem("employees") || "[]"
-      );
+      // Call the backend API
+      const result = await addEmployee(formData);
+      console.log('result', result)
 
-      let updatedEmployees;
-
-      if (initialData) {
-        updatedEmployees = existingEmployees.map((emp: any) =>
-          emp.email === initialData.email ? formData : emp
-        );
-
-        toast.current?.show({
-          severity: "success",
-          summary: "Updated",
-          detail: "Employee updated successfully!",
-        });
-      } else {
-        updatedEmployees = [...existingEmployees, formData];
-
+      if (result.success) {
         toast.current?.show({
           severity: "success",
           summary: "Success",
           detail: "Employee added successfully!",
         });
+
+        handleClear();
+
+        if (onSuccess) {
+          setTimeout(() => onSuccess(), 500);
+        }
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: result.message || "Failed to add employee",
+        });
       }
-
-      localStorage.setItem("employees", JSON.stringify(updatedEmployees));
-
-      handleClear();
-
-      if (onSuccess) {
-        setTimeout(() => onSuccess(), 500);
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving employee:", error);
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: "Failed to save employee",
+        detail: error.message || "Failed to add employee",
       });
     }
   };
