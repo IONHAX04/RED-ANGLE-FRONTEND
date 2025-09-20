@@ -11,6 +11,7 @@ import AssignLeads from "../components/03-AssignLeads/AssignLeads";
 import AddQuotation from "../components/04-QuotationComponents/AddQuotation/AddQuotation";
 import Login from "../pages/00-Login/Login";
 import Profile from "../pages/11-Profile/Profile";
+import Attendance from "../pages/12-Attendance/Attendance";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -119,6 +120,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ATTENDANCE */}
+          <Route
+            path="/attendance"
+            element={
+              <ProtectedRoute>
+                <Attendance />
               </ProtectedRoute>
             }
           />

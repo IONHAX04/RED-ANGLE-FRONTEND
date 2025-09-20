@@ -16,9 +16,12 @@ import {
   IdCard,
   ClipboardList,
   Menu as MenuIcon,
+  LogOut,
+  Fingerprint,
 } from "lucide-react";
 
 import "./Header.css";
+import { Divider } from "primereact/divider";
 
 interface SubMenuItem {
   label: string;
@@ -94,6 +97,8 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+  { label: "Attendance", icon: <Fingerprint size={18} />, route: "/attendance" },
+
 ];
 
 const Header = ({ children }: NavProps) => {
@@ -105,11 +110,9 @@ const Header = ({ children }: NavProps) => {
     avatar: "",
   });
 
-  // 🚫 Routes where sidebar should NOT show
   const hideSidebarRoutes = ["/login", "/forgotpassword"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
-  // Load user info from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("userDetails");
     if (storedUser) {
@@ -118,12 +121,11 @@ const Header = ({ children }: NavProps) => {
       setUserInfo({
         name: `${parsed.firstName} ${parsed.lastName}`,
         avatar:
-          "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png", // you can replace with real avatar URL if available
+          "https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png",
       });
     }
   }, []);
 
-  // Toggle menu open/close
   const toggleMenu = (index: number) => {
     setOpenMenus((prev) => ({
       ...prev,
@@ -237,12 +239,28 @@ const Header = ({ children }: NavProps) => {
           {/* User Profile */}
           <div className="mt-auto">
             <hr className="mb-3 border-none surface-border" />
+
+            {/* Profile info */}
             <div
               className="m-3 flex items-center gap-2 cursor-pointer rounded text-gray-700 hover:bg-gray-100 transition-colors duration-150 p-2"
               onClick={() => navigate("/profile")}
             >
               <Avatar image={userInfo.avatar} shape="circle" />
               <span className="font-semibold">{userInfo.name}</span>
+            </div>
+
+            <Divider />
+
+            {/* Logout Button */}
+            <div
+              className="m-3 flex items-center gap-2 cursor-pointer rounded text-gray-700 hover:bg-gray-100 transition-colors duration-150 p-2"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login", { replace: true });
+              }}
+            >
+              <LogOut size={18} />
+              <span className="font-medium">Logout</span>
             </div>
           </div>
         </div>
