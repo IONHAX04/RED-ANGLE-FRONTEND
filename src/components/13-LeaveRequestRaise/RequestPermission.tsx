@@ -5,10 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import React, { useState, useRef } from "react";
-import {
-  addLeaveRequest,
-  updateLeaveRequest,
-} from "./RequestLeave.function";
+import { addLeaveRequest, updateLeaveRequest } from "./RequestLeave.function";
 
 const RequestPermission: React.FC<{
   initialData?: any;
@@ -51,6 +48,53 @@ const RequestPermission: React.FC<{
     return true;
   };
 
+  // 👉 helper function to add minutes/hours
+  const calculateToTime = (from: Date, durationValue: string) => {
+    const newTime = new Date(from);
+
+    switch (durationValue) {
+      case "30m":
+        newTime.setMinutes(newTime.getMinutes() + 30);
+        break;
+      case "1h":
+        newTime.setHours(newTime.getHours() + 1);
+        break;
+      case "2h":
+        newTime.setHours(newTime.getHours() + 2);
+        break;
+      case "half-day":
+        newTime.setHours(newTime.getHours() + 4); // assuming half-day = 4 hrs
+        break;
+      default:
+        break;
+    }
+
+    return newTime;
+  };
+
+  const handleDurationChange = (value: string) => {
+    let newFrom = fromTime;
+    if (!newFrom) {
+      // set default current time if not already selected
+      newFrom = new Date();
+      setFromTime(newFrom);
+    }
+
+    const newTo = calculateToTime(newFrom, value);
+    setToTime(newTo);
+    setDuration(value);
+  };
+
+  // 👉 clear form
+  const handleClear = () => {
+    setReason("");
+    setDate(null);
+    setDuration(null);
+    setFromTime(null);
+    setToTime(null);
+    setDescription("");
+  };
+
   const handleSave = async () => {
     try {
       if (!validateForm()) return;
@@ -81,6 +125,10 @@ const RequestPermission: React.FC<{
             ? "Permission updated successfully!"
             : "Permission requested successfully!",
         });
+
+        if (!isEditMode) {
+          handleClear(); // 👈 reset form only for new request
+        }
 
         if (onSuccess) {
           setTimeout(() => onSuccess(), 500);
@@ -137,7 +185,7 @@ const RequestPermission: React.FC<{
           <Dropdown
             value={duration}
             options={durationOptions}
-            onChange={(e) => setDuration(e.value)}
+            onChange={(e) => handleDurationChange(e.value)}
             className="w-full"
             placeholder="Select duration"
           />

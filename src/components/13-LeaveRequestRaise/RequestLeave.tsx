@@ -4,10 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import React, { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
-import {
-  addLeaveRequest,
-  updateLeaveRequest,
-} from "./RequestLeave.function";
+import { addLeaveRequest, updateLeaveRequest } from "./RequestLeave.function";
 
 const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
   initialData,
@@ -48,6 +45,14 @@ const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
     return true;
   };
 
+  // 👉 Clear form after successful save
+  const handleClear = () => {
+    setLeaveType(null);
+    setFromDate(null);
+    setToDate(null);
+    setDescription("");
+  };
+
   const handleSave = async () => {
     try {
       if (!validateForm()) return;
@@ -76,6 +81,10 @@ const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
             ? "Leave updated successfully!"
             : "Leave requested successfully!",
         });
+
+        if (!isEditMode) {
+          handleClear(); // 👈 reset form if it’s a new leave request
+        }
 
         if (onSuccess) {
           setTimeout(() => onSuccess(), 500);

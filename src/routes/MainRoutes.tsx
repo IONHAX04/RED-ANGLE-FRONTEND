@@ -13,6 +13,7 @@ import Login from "../pages/00-Login/Login";
 import Profile from "../pages/11-Profile/Profile";
 import Attendance from "../pages/12-Attendance/Attendance";
 import LeaveRequest from "../pages/13-LeaveRequest/LeaveRequest";
+import EmployeeLeaveReq from "../components/10-EmployeesComponents/EmployeeLeaveReq/EmployeeLeaveReq";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -141,6 +142,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <LeaveRequest />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* APPROVE LEAVE REQ */}
+          <Route
+            path="/employees/leave-request"
+            element={
+              <ProtectedRoute>
+                <EmployeeLeaveReq />
               </ProtectedRoute>
             }
           />

@@ -2,12 +2,9 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getAllRequests = async (employeeId?: any) => {
-    console.log('employeeId', employeeId)
+export const getAllRequests = async () => {
   try {
-    const url = employeeId
-      ? `${API_URL}/request?employeeId=${employeeId}`
-      : `${API_URL}/request`;
+    const url = `${API_URL}/request`;
 
     const response = await axios.get(url);
     return response.data; // { success: true, data: [...] }
