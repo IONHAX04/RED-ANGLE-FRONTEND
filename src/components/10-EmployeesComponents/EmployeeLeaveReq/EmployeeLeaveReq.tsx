@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { getAllRequests } from "./EmployeeLeaveReq.function";
+import {
+  getAllRequests,
+  updateRequestStatus,
+} from "./EmployeeLeaveReq.function";
 import SubHeader from "../../Header/SubHeader/SubHeader";
 
 const EmployeeLeaveReq: React.FC = () => {
@@ -13,7 +16,7 @@ const EmployeeLeaveReq: React.FC = () => {
     try {
       setLoading(true);
 
-      const result = await getAllRequests(); // pass userId to backend
+      const result = await getAllRequests();
       if (result.success) {
         setRequests(result.data);
       }
@@ -28,7 +31,6 @@ const EmployeeLeaveReq: React.FC = () => {
     fetchRequests();
   }, []);
 
-  // Format ISO date/time to human readable
   const formatTime = (timeStr?: string) => {
     if (!timeStr) return "-";
     const date = new Date(timeStr);
@@ -38,27 +40,39 @@ const EmployeeLeaveReq: React.FC = () => {
     });
   };
 
-  // Actions column buttons
   const actionBodyTemplate = (rowData: any) => {
+    const disabled = rowData.status !== "pending";
+
     return (
       <div className="flex gap-2">
         <Button
           label="Approve"
           className="p-button-success p-button-sm"
           onClick={() => handleAction(rowData.id, "approved")}
+          disabled={disabled}
         />
         <Button
           label="Reject"
           className="p-button-danger p-button-sm"
           onClick={() => handleAction(rowData.id, "rejected")}
+          disabled={disabled}
         />
       </div>
     );
   };
 
-  const handleAction = async (id: number, action: string) => {
-    console.log(`Action: ${action} on request ${id}`);
-    // TODO: Call backend API to approve/reject/check times
+  const handleAction = async (id: number, action: "approved" | "rejected") => {
+    try {
+      const result = await updateRequestStatus(id, action);
+      console.log('result', result)
+      if (result.success) {
+        setRequests((prev) =>
+          prev.map((req) => (req.id === id ? { ...req, status: action } : req))
+        );
+      }
+    } catch (error) {
+      console.error("Error updating request:", error);
+    }
   };
 
   const capitalize = (text: string) => {

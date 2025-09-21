@@ -16,3 +16,19 @@ export const getAllRequests = async () => {
     throw new Error(message);
   }
 };
+
+export const updateRequestStatus = async (id: number, status: string) => {
+  console.log('status', status)
+  console.log('id', id)
+  try {
+    const response = await axios.put(`${API_URL}/request/${id}`, { status });
+    console.log("response", response);
+    return response.data; // { success: true, data: {...} }
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to update request";
+    throw new Error(message);
+  }
+};
