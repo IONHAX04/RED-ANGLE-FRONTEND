@@ -59,39 +59,39 @@ const AddQuotation: React.FC = () => {
     }
   }, []);
 
-  const handleAssignEmployees = (employees: any[]) => {
-    if (!leadDetails) return;
+  // const handleAssignEmployees = (employees: any[]) => {
+  //   if (!leadDetails) return;
 
-    // ✅ Update lead status
-    const updatedLead = { ...leadDetails, status: "Assigned" };
+  //   // ✅ Update lead status
+  //   const updatedLead = { ...leadDetails, status: "Assigned" };
 
-    // ✅ Save in viewLeads
-    const existing = JSON.parse(localStorage.getItem("viewLeads") || "[]");
-    existing.push({
-      lead: updatedLead,
-      employees,
-    });
-    localStorage.setItem("viewLeads", JSON.stringify(existing));
+  //   // ✅ Save in viewLeads
+  //   const existing = JSON.parse(localStorage.getItem("viewLeads") || "[]");
+  //   existing.push({
+  //     lead: updatedLead,
+  //     employees,
+  //   });
+  //   localStorage.setItem("viewLeads", JSON.stringify(existing));
 
-    // ✅ Update leads array in localStorage
-    const leads = JSON.parse(localStorage.getItem("leads") || "[]");
-    const updatedLeads = leads.map((l: any) =>
-      l.email === leadDetails.email ? { ...l, status: "Assigned" } : l
-    );
-    localStorage.setItem("leads", JSON.stringify(updatedLeads));
+  //   // ✅ Update leads array in localStorage
+  //   const leads = JSON.parse(localStorage.getItem("leads") || "[]");
+  //   const updatedLeads = leads.map((l: any) =>
+  //     l.email === leadDetails.email ? { ...l, status: "Assigned" } : l
+  //   );
+  //   localStorage.setItem("leads", JSON.stringify(updatedLeads));
 
-    // ✅ UI update
-    setCustomers(
-      updatedLeads.map((l: any, i: number) => ({ ...l, id: i + 1 }))
-    );
-    setAssignSidebar(false);
-    toast.current?.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Leads assigned",
-      life: 3000,
-    });
-  };
+  //   // ✅ UI update
+  //   setCustomers(
+  //     updatedLeads.map((l: any, i: number) => ({ ...l, id: i + 1 }))
+  //   );
+  //   setAssignSidebar(false);
+  //   toast.current?.show({
+  //     severity: "success",
+  //     summary: "Success",
+  //     detail: "Leads assigned",
+  //     life: 3000,
+  //   });
+  // };
 
   const rightToolbarTemplate = () => {
     const selectionCount = selectedCustomers.length;
@@ -177,8 +177,8 @@ const AddQuotation: React.FC = () => {
           >
             {leadDetails && (
               <CreateQuotation
-                lead={leadDetails}
-                onAssign={handleAssignEmployees}
+                // lead={leadDetails}
+                // onAssign={handleAssignEmployees}
               />
             )}
           </Sidebar>

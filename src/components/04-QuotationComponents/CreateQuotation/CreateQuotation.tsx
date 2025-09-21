@@ -8,8 +8,8 @@ interface Package {
   id: number;
   serviceName: string;
   description: string;
-  quantity: number;
-  price: number;
+  quantity: string;
+  price: string;
 }
 
 const CreateQuotation: React.FC = () => {
@@ -18,8 +18,8 @@ const CreateQuotation: React.FC = () => {
     id: Date.now(),
     serviceName: "",
     description: "",
-    quantity: 1,
-    price: 0,
+    quantity: "",
+    price: "",
   });
 
   const handleChange = (
@@ -42,8 +42,8 @@ const CreateQuotation: React.FC = () => {
       id: Date.now(),
       serviceName: "",
       description: "",
-      quantity: 1,
-      price: 0,
+      quantity: "",
+      price: "",
     });
   };
 

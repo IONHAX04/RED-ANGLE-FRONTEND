@@ -13,7 +13,7 @@ interface LeadDetailsProps {
     mobile: string;
     eventType: string;
     leadSource: string;
-    budget?: number;
+    budget?: string;
     notes?: string;
     status: string;
     doorNo: string;

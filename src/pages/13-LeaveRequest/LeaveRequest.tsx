@@ -118,7 +118,7 @@ const LeaveRequest: React.FC = () => {
         onHide={() => setRequestPermission(false)}
       >
         {userId && (
-          <RequestPermission onSuccess={fetchRequests} employeeId={userId} />
+          <RequestPermission onSuccess={fetchRequests} initialData={userId} />
         )}
       </Sidebar>
 
@@ -130,7 +130,7 @@ const LeaveRequest: React.FC = () => {
         onHide={() => setRequestLeave(false)}
       >
         {userId && (
-          <RequestLeave onSuccess={fetchRequests} employeeId={userId} />
+          <RequestLeave onSuccess={fetchRequests} initialData={userId} />
         )}
       </Sidebar>
     </div>

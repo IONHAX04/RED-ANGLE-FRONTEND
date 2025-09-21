@@ -4,25 +4,27 @@ import { Chip } from "primereact/chip";
 import { Divider } from "primereact/divider";
 import React from "react";
 
-interface LeadDetailsProps {
-  data: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobile: string;
-    eventType: string;
-    leadSource: string;
-    budget?: number;
-    notes?: string;
-    status: string;
+interface Customer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobile: string;
+  eventType: string;
+  leadSource: string;
+  budget?: string;
+  notes?: string;
+  status: string;
 
-    doorNo: string;
-    street: string;
-    city: string;
-    state: string;
-    country: string;
-  };
+  doorNo: string;
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+}
+
+interface LeadDetailsProps {
+  data: Customer;
 }
 
 const LeadDetails: React.FC<LeadDetailsProps> = ({ data }) => {

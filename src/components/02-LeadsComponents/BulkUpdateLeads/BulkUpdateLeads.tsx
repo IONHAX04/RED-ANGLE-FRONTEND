@@ -5,6 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { Toast } from "primereact/toast";
 
 interface Lead {
   S_No: number;
@@ -23,8 +24,9 @@ interface Lead {
 
 const BulkUpdateLeads: React.FC = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const toastRef = useRef<Toast>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -38,7 +40,6 @@ const BulkUpdateLeads: React.FC = () => {
       const sheet = workbook.Sheets[sheetName];
       const jsonData: any[] = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-      // Map Excel keys to normalized keys
       const mappedData: Lead[] = jsonData.map((item) => ({
         S_No: item["S_No"] || "",
         created_time: item["created_time"] || "",
@@ -59,12 +60,19 @@ const BulkUpdateLeads: React.FC = () => {
     reader.readAsBinaryString(file);
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  const triggerFileInput = () => fileInputRef.current?.click();
 
   const handleSaveLeads = async () => {
-    if (leads.length === 0) return;
+    if (leads.length === 0) {
+      toastRef.current?.show({
+        severity: "warn",
+        summary: "No Data",
+        detail: "Please upload Excel data first",
+        life: 3000,
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await axios.put(
@@ -73,13 +81,29 @@ const BulkUpdateLeads: React.FC = () => {
       );
 
       if (res.data.success) {
-        alert("Leads updated successfully!");
+        toastRef.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Leads updated successfully",
+          life: 3000,
+        });
+        setLeads([]); // clear the table after success
       } else {
-        alert("Failed to update leads: " + res.data.message);
+        toastRef.current?.show({
+          severity: "error",
+          summary: "Failed",
+          detail: res.data.message || "Failed to update leads",
+          life: 3000,
+        });
       }
     } catch (error) {
       console.error("Error saving leads", error);
-      alert("Error saving leads");
+      toastRef.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error saving leads",
+        life: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -87,6 +111,7 @@ const BulkUpdateLeads: React.FC = () => {
 
   return (
     <div>
+      <Toast ref={toastRef} />
       <SubHeader
         title="Bulk Update Leads"
         subtitle={new Date().toLocaleDateString("en-US", {
@@ -173,7 +198,6 @@ const BulkUpdateLeads: React.FC = () => {
             style={{ minWidth: "10rem" }}
           />
           <Column field="E_mail" header="Email" style={{ minWidth: "12rem" }} />
-
           <Column
             field="Status1"
             header="Status 1"

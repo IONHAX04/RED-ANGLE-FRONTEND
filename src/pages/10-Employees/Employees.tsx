@@ -11,7 +11,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
 
 import type { DataTableFilterMeta } from "primereact/datatable";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import AddNewEmployees from "../../components/10-EmployeesComponents/AddNewEmployees/AddNewEmployees";
 import SubHeader from "../../components/Header/SubHeader/SubHeader";
 import { CalendarCheck, Eye, Plus, Trash2 } from "lucide-react";
@@ -21,7 +21,7 @@ import { getEmployees, deleteEmployee } from "./Employee.function";
 import type { Employee } from "./Employees.interface";
 
 const Employees: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const toast = useRef<Toast>(null);
 
   const [selectedCustomers, setSelectedCustomers] = useState<Employee[]>([]);
