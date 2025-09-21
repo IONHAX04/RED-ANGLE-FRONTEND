@@ -49,6 +49,11 @@ const menuItems: MenuItem[] = [
     subItems: [
       { label: "Add Lead", icon: <UserPlus size={18} />, route: "/leads/add" },
       {
+        label: "Bulk Onboard",
+        icon: <UserPlus size={18} />,
+        route: "/leads/bulk",
+      },
+      {
         label: "View & Track Lead",
         icon: <List size={18} />,
         route: "/leads/view",
@@ -112,6 +117,11 @@ const menuItems: MenuItem[] = [
     label: "Leave Request",
     icon: <CalendarCheck size={18} />,
     route: "/leaveReq",
+  },
+  {
+    label: "Settings",
+    icon: <CalendarCheck size={18} />,
+    route: "/settings",
   },
 ];
 
