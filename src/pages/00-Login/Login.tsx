@@ -37,7 +37,7 @@ const Login: React.FC = () => {
         localStorage.setItem("userDetails", JSON.stringify(result.data[0]));
 
         // Redirect to dashboard or employee page
-        navigate("/dashboard");
+        navigate("/leads/view");
       } else {
         toast.current?.show({
           severity: "error",

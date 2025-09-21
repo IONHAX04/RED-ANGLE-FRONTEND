@@ -10,6 +10,7 @@ import SubHeader from "../../Header/SubHeader/SubHeader";
 // import AssignLeadComponents from "../../03-AssignLeads/AssignLeadComponents/AssignLeadComponents";
 import CreateQuotation from "../CreateQuotation/CreateQuotation";
 import axios from "axios";
+import { InputText } from "primereact/inputtext";
 
 interface Customer {
   id: number;
@@ -33,7 +34,7 @@ const AddQuotation: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [assignSidebar, setAssignSidebar] = useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
-  console.log('leadDetails', leadDetails)
+  console.log("leadDetails", leadDetails);
   const toast = useRef<Toast>(null);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
@@ -94,6 +95,26 @@ const AddQuotation: React.FC = () => {
     </div>
   );
 
+  const leftToolbarTemplate = () => {
+    return (
+      <span className="p-input-icon-left">
+        <InputText
+          type="search"
+          onInput={(e) =>
+            setFilters({
+              ...filters,
+              global: {
+                value: (e.target as HTMLInputElement).value,
+                matchMode: FilterMatchMode.CONTAINS,
+              },
+            })
+          }
+          placeholder="Global Search"
+        />
+      </span>
+    );
+  };
+
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -144,7 +165,7 @@ const AddQuotation: React.FC = () => {
           })}
         />
         <div className="p-4">
-          <Toolbar right={rightToolbarTemplate} />
+          <Toolbar right={rightToolbarTemplate} left={leftToolbarTemplate} />
           <DataTable
             value={customers}
             paginator
