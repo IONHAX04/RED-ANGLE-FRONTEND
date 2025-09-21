@@ -108,6 +108,11 @@ const menuItems: MenuItem[] = [
     icon: <Fingerprint size={18} />,
     route: "/attendance",
   },
+  {
+    label: "Leave Request",
+    icon: <CalendarCheck size={18} />,
+    route: "/leaveReq",
+  },
 ];
 
 const Header = ({ children }: NavProps) => {

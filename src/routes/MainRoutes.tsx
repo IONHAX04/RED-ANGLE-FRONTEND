@@ -12,6 +12,7 @@ import AddQuotation from "../components/04-QuotationComponents/AddQuotation/AddQ
 import Login from "../pages/00-Login/Login";
 import Profile from "../pages/11-Profile/Profile";
 import Attendance from "../pages/12-Attendance/Attendance";
+import LeaveRequest from "../pages/13-LeaveRequest/LeaveRequest";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -130,6 +131,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Attendance />
+              </ProtectedRoute>
+            }
+          />
+
+          {/*LEAVE REQ  */}
+          <Route
+            path="/leaveReq"
+            element={
+              <ProtectedRoute>
+                <LeaveRequest />
               </ProtectedRoute>
             }
           />

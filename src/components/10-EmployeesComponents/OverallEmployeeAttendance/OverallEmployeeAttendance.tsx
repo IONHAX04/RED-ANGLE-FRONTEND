@@ -13,9 +13,9 @@ interface Employee {
   id: number;
   name: string;
   date: string;
-  punchIn: string;
-  punchOut: string;
-  totalHours: string;
+  punch_in_time: string;
+  punch_out_time: string;
+  total_hours: string;
   status: string;
 }
 
@@ -37,8 +37,6 @@ const OverallEmployeeAttendance: React.FC = () => {
       const response = await axios.get(
         import.meta.env.VITE_API_URL + "/attendance/get"
       );
-      console.log("response", response);
-      // Assuming API returns array of attendance records
       setEmployees(response.data.data);
     } catch (error) {
       console.error("Error fetching attendance:", error);
@@ -47,7 +45,7 @@ const OverallEmployeeAttendance: React.FC = () => {
 
   // Toolbar contents
   const leftContents = (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
       <span className="p-input-icon-left">
         <InputText
           placeholder="Global Search"
@@ -55,7 +53,6 @@ const OverallEmployeeAttendance: React.FC = () => {
           onChange={(e) => setGlobalFilter(e.target.value)}
         />
       </span>
-
       <Calendar
         value={fromDate}
         onChange={(e) => setFromDate(e.value as Date)}
@@ -68,17 +65,26 @@ const OverallEmployeeAttendance: React.FC = () => {
         placeholder="To"
         dateFormat="yy-mm-dd"
       />
-
       <Dropdown
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.value)}
         options={[
-          { label: "All", value: null },
           { label: "Present", value: "Present" },
           { label: "Absent", value: "Absent" },
         ]}
         placeholder="Status"
         className="w-32"
+      />
+
+      <Button
+        label="Clear Filters"
+        className="p-button-sm p-button-secondary"
+        onClick={() => {
+          setGlobalFilter("");
+          setFromDate(null);
+          setToDate(null);
+          setStatusFilter(null);
+        }}
       />
     </div>
   );
@@ -138,7 +144,7 @@ const OverallEmployeeAttendance: React.FC = () => {
             <p>
               {(
                 filteredEmployees.reduce((acc, curr) => {
-                  const hours = parseInt(curr.totalHours);
+                  const hours = parseInt(curr.total_hours);
                   return acc + (isNaN(hours) ? 0 : hours);
                 }, 0) / (filteredEmployees.length || 1)
               ).toFixed(1)}
