@@ -15,6 +15,7 @@ import Attendance from "../pages/12-Attendance/Attendance";
 import LeaveRequest from "../pages/13-LeaveRequest/LeaveRequest";
 import EmployeeLeaveReq from "../components/10-EmployeesComponents/EmployeeLeaveReq/EmployeeLeaveReq";
 import Settings from "../pages/14-Settings/Settings";
+import BulkUpdateLeads from "../components/02-LeadsComponents/BulkUpdateLeads/BulkUpdateLeads";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -75,6 +76,15 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <StatusIndicator />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/leads/bulk"
+            element={
+              <ProtectedRoute>
+                <BulkUpdateLeads />
               </ProtectedRoute>
             }
           />
@@ -158,7 +168,7 @@ const MainRoutes: React.FC = () => {
           />
 
           {/* SETTINGS */}
-           <Route
+          <Route
             path="/settings"
             element={
               <ProtectedRoute>
