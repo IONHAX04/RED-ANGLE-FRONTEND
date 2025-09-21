@@ -9,6 +9,7 @@ import { Toast } from "primereact/toast";
 import SubHeader from "../../Header/SubHeader/SubHeader";
 // import AssignLeadComponents from "../../03-AssignLeads/AssignLeadComponents/AssignLeadComponents";
 import CreateQuotation from "../CreateQuotation/CreateQuotation";
+import axios from "axios";
 
 interface Customer {
   id: number;
@@ -32,6 +33,7 @@ const AddQuotation: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [assignSidebar, setAssignSidebar] = useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
+  console.log('leadDetails', leadDetails)
   const toast = useRef<Toast>(null);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
@@ -59,40 +61,6 @@ const AddQuotation: React.FC = () => {
     }
   }, []);
 
-  // const handleAssignEmployees = (employees: any[]) => {
-  //   if (!leadDetails) return;
-
-  //   // ✅ Update lead status
-  //   const updatedLead = { ...leadDetails, status: "Assigned" };
-
-  //   // ✅ Save in viewLeads
-  //   const existing = JSON.parse(localStorage.getItem("viewLeads") || "[]");
-  //   existing.push({
-  //     lead: updatedLead,
-  //     employees,
-  //   });
-  //   localStorage.setItem("viewLeads", JSON.stringify(existing));
-
-  //   // ✅ Update leads array in localStorage
-  //   const leads = JSON.parse(localStorage.getItem("leads") || "[]");
-  //   const updatedLeads = leads.map((l: any) =>
-  //     l.email === leadDetails.email ? { ...l, status: "Assigned" } : l
-  //   );
-  //   localStorage.setItem("leads", JSON.stringify(updatedLeads));
-
-  //   // ✅ UI update
-  //   setCustomers(
-  //     updatedLeads.map((l: any, i: number) => ({ ...l, id: i + 1 }))
-  //   );
-  //   setAssignSidebar(false);
-  //   toast.current?.show({
-  //     severity: "success",
-  //     summary: "Success",
-  //     detail: "Leads assigned",
-  //     life: 3000,
-  //   });
-  // };
-
   const rightToolbarTemplate = () => {
     const selectionCount = selectedCustomers.length;
     return (
@@ -113,19 +81,75 @@ const AddQuotation: React.FC = () => {
     );
   };
 
+  const nameTemplate = (row: Customer) => (
+    <div>
+      <div className="font-bold">
+        {row.firstName} {row.lastName}
+      </div>
+      <div className="text-sm text-gray-600 line-clamp-1">
+        {row.eventType}
+        {/* {row.doorNo}, {row.street}, {row.city}, {row.state},{" "} */}
+        {/* {row.country} */}
+      </div>
+    </div>
+  );
+
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const res = await axios.get(
+          import.meta.env.VITE_API_URL + "/leads/getAll"
+        );
+        if (res.data.success) {
+          // Map API data to Customer interface
+          const data = res.data.data.map((lead: any) => ({
+            id: lead.id,
+            firstName: lead.full_name.split(" ")[0] || "",
+            lastName: lead.full_name.split(" ").slice(1).join(" ") || "",
+            email: lead.email,
+            mobile: lead.phone_number,
+            eventType: lead.wedding_type,
+            leadSource: lead.lead_source || "Other",
+            budget: lead.package || undefined,
+            notes: lead.notes || "",
+            status: lead.status || "New",
+            country: lead.country || "",
+            doorNo: lead.door_no || "",
+            street: lead.street || "",
+            city: lead.city || "",
+            state: lead.state || "",
+          }));
+          setCustomers(data);
+          console.log("data", data);
+        }
+      } catch (err) {
+        console.error("Error fetching leads:", err);
+      }
+    };
+
+    fetchLeads();
+  }, []);
+
   return (
     <div>
       <div>
         <Toast ref={toast} />
         <SubHeader
           title="Quotation"
-          subtitle={new Date().toLocaleDateString()}
+          subtitle={new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         />
         <div className="p-4">
           <Toolbar right={rightToolbarTemplate} />
           <DataTable
             value={customers}
             paginator
+            dataKey="id"
+            scrollable
             rows={5}
             rowsPerPageOptions={[5, 10, 25]}
             filters={filters}
@@ -135,11 +159,11 @@ const AddQuotation: React.FC = () => {
               setSelectedCustomers(e.value as Customer[])
             }
             selectionMode="multiple"
-            dataKey="id"
             showGridlines
-            scrollable
             className="mt-3 p-datatable-sm"
             emptyMessage="No leads found."
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} leads"
           >
             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
             <Column
@@ -149,38 +173,44 @@ const AddQuotation: React.FC = () => {
             />
             <Column
               header="Lead Details"
-              body={(row: Customer) => (
-                <div>
-                  <div className="font-bold">
-                    {row.firstName} {row.lastName}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {row.eventType} - {row.city}, {row.state}
-                  </div>
-                </div>
-              )}
+              body={nameTemplate}
+              style={{ minWidth: "18rem" }}
+            />
+            <Column
+              field="email"
+              header="Email"
+              sortable
               style={{ minWidth: "12rem" }}
             />
-            <Column field="email" header="Email" />
-            <Column field="mobile" header="Mobile" />
-            <Column field="budget" header="Budget" />
-            <Column field="leadSource" header="Lead Source" />
-            <Column field="status" header="Status" />
+            <Column
+              field="mobile"
+              header="Mobile"
+              style={{ minWidth: "12rem" }}
+            />
+            <Column
+              field="budget"
+              header="Budget"
+              style={{ minWidth: "7rem" }}
+            />
+            <Column
+              field="leadSource"
+              header="Lead Source"
+              filterField="leadSource"
+              style={{ minWidth: "12rem" }}
+            />
           </DataTable>
 
           <Sidebar
             visible={assignSidebar}
             position="right"
-            header="Assign Employees"
+            header="Quotation"
             onHide={() => setAssignSidebar(false)}
             style={{ width: "80vw" }}
           >
-            {leadDetails && (
-              <CreateQuotation
-                // lead={leadDetails}
-                // onAssign={handleAssignEmployees}
-              />
-            )}
+            <CreateQuotation
+            // lead={leadDetails}
+            // onAssign={handleAssignEmployees}
+            />
           </Sidebar>
         </div>
       </div>

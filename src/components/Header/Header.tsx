@@ -6,23 +6,31 @@ import {
   Home,
   Users,
   UserPlus,
+  Upload,
   List,
   Activity,
   Share2,
   FileText,
   FilePlus2,
-  ChevronDown,
-  ChevronRight,
+  FileSpreadsheet,
+  FileCheck2,
+  ClipboardCheck,
+  ShieldCheck,
+  BarChart3,
+  PieChart,
   IdCard,
   ClipboardList,
-  Menu as MenuIcon,
-  LogOut,
+  UserCog,
   Fingerprint,
   CalendarCheck,
+  Settings,
+  MenuIcon,
+  ChevronDown,
+  ChevronRight,
+  LogOut,
 } from "lucide-react";
 
 import "./Header.css";
-import { Divider } from "primereact/divider";
 
 interface SubMenuItem {
   label: string;
@@ -43,6 +51,7 @@ interface NavProps {
 
 const menuItems: MenuItem[] = [
   { label: "Dashboard", icon: <Home size={18} />, route: "/dashboard" },
+
   {
     label: "Leads",
     icon: <Users size={18} />,
@@ -50,7 +59,7 @@ const menuItems: MenuItem[] = [
       { label: "Add Lead", icon: <UserPlus size={18} />, route: "/leads/add" },
       {
         label: "Bulk Onboard",
-        icon: <UserPlus size={18} />,
+        icon: <Upload size={18} />,
         route: "/leads/bulk",
       },
       {
@@ -65,17 +74,31 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+
   {
     label: "Assign Leads",
     icon: <Share2 size={18} />,
     subItems: [
       {
         label: "Assign Lead",
-        icon: <UserPlus size={18} />,
+        icon: <UserCog size={18} />,
         route: "/assign/add",
       },
     ],
   },
+
+  {
+    label: "Book Confirmation",
+    icon: <ClipboardCheck size={18} />,
+    subItems: [
+      {
+        label: "Book Lead",
+        icon: <FileCheck2 size={18} />,
+        route: "/book/lead",
+      },
+    ],
+  },
+
   {
     label: "Quotation",
     icon: <FileText size={18} />,
@@ -87,6 +110,48 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+
+  {
+    label: "Invoice",
+    icon: <FileSpreadsheet size={18} />,
+    subItems: [
+      {
+        label: "Overall Invoice",
+        icon: <FileText size={18} />,
+        route: "/invoice/overall",
+      },
+    ],
+  },
+
+  {
+    label: "Approval",
+    icon: <ShieldCheck size={18} />,
+    subItems: [
+      {
+        label: "Manager Approval",
+        icon: <ClipboardCheck size={18} />,
+        route: "/approval/manager",
+      },
+    ],
+  },
+
+  {
+    label: "Reports",
+    icon: <BarChart3 size={18} />,
+    subItems: [
+      {
+        label: "Overall Reports",
+        icon: <FileText size={18} />,
+        route: "/reports/overall",
+      },
+      {
+        label: "Metrics",
+        icon: <PieChart size={18} />,
+        route: "/reports/metrics",
+      },
+    ],
+  },
+
   {
     label: "Employees",
     icon: <Users size={18} />,
@@ -108,6 +173,7 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+
   {
     label: "Attendance",
     icon: <Fingerprint size={18} />,
@@ -120,11 +186,10 @@ const menuItems: MenuItem[] = [
   },
   {
     label: "Settings",
-    icon: <CalendarCheck size={18} />,
+    icon: <Settings size={18} />,
     route: "/settings",
   },
 ];
-
 const Header = ({ children }: NavProps) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -273,7 +338,6 @@ const Header = ({ children }: NavProps) => {
               <span className="font-semibold">{userInfo.name}</span>
             </div>
 
-            <Divider />
 
             {/* Logout Button */}
             <div

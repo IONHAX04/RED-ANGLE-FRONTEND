@@ -2,23 +2,34 @@ import React, { useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import axios from "axios";
 
-interface Employee {
+export interface Employee {
   id: number;
   firstName: string;
   lastName: string;
   email: string;
   mobile: string;
+  secondaryMobile: string;
+  doorNo: string;
+  street: string;
   city: string;
+  district: string;
   state: string;
   country: string;
   workLocation: string;
   salesType: string;
   availability: string;
-  experience: number;
+  experience: string; // 👈 If you want strict typing, make it number instead
   skills: string[];
   portfolio: string;
   reason: string;
+  createdAt: string; // ISO Date string
+  createdBy: string;
+  updatedAt: string | null;
+  updatedBy: string | null;
+  isActive: "Y" | "N";
+  isDelete: "Y" | "N";
 }
 
 const AssignLeadComponents: React.FC<{
@@ -27,18 +38,29 @@ const AssignLeadComponents: React.FC<{
 }> = ({ lead, onAssign }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("employees");
-    if (stored) {
+    const fetchEmployees = async () => {
       try {
-        const parsed: Employee[] = JSON.parse(stored);
-        const updated = parsed.map((emp, index) => ({ ...emp, id: index + 1 }));
-        setEmployees(updated);
+        setLoading(true);
+        const res = await axios.get(
+          import.meta.env.VITE_API_URL + "/routes/employees"
+        );
+        console.log("res", res.data.data);
+        if (res.data.success) {
+          console.log("res.data.data", res.data.data);
+          setEmployees(res.data.data);
+        } else {
+          console.error("Failed to fetch employees:", res.data.message);
+        }
       } catch (err) {
-        console.error("Error parsing employees:", err);
+        console.error("Error fetching employees:", err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+    fetchEmployees();
   }, []);
 
   const handleAssign = () => {
@@ -50,7 +72,7 @@ const AssignLeadComponents: React.FC<{
   };
 
   return (
-    <div className="p-4">
+    <div className="">
       <h3 className="font-bold mb-3">
         Assign employees to: {lead.firstName} {lead.lastName}
       </h3>
@@ -63,6 +85,7 @@ const AssignLeadComponents: React.FC<{
         paginator
         rows={5}
         showGridlines
+        loading={loading}
         className="mb-4"
       >
         <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
@@ -89,16 +112,6 @@ const AssignLeadComponents: React.FC<{
           field="workLocation"
           header="Work Location"
           style={{ minWidth: "14rem" }}
-        />
-        <Column
-          field="experience"
-          header="Experience"
-          style={{ minWidth: "14rem" }}
-        />
-        <Column
-          field="skills"
-          header="Skills"
-          body={(row) => row.skills?.join(", ")}
         />
       </DataTable>
 

@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
-import SubHeader from "../Header/SubHeader/SubHeader";
 import { Toolbar } from "primereact/toolbar";
 import { DataTable, type DataTableFilterMeta } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
-import AssignLeadComponents from "./AssignLeadComponents/AssignLeadComponents";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { IconField } from "primereact/iconfield";
@@ -14,6 +12,8 @@ import { InputIcon } from "primereact/inputicon";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
+import SubHeader from "../../components/Header/SubHeader/SubHeader";
+import BookConfirmationComponents from "../../components/05-BookConfirmationComponents/BookConfirmationComponents";
 
 interface Customer {
   id: number;
@@ -33,7 +33,7 @@ interface Customer {
   state: string;
 }
 
-const AssignLeads: React.FC = () => {
+const BookConfirmation: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [assignSidebar, setAssignSidebar] = useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
@@ -80,23 +80,23 @@ const AssignLeads: React.FC = () => {
     }
   }, []);
 
-  const handleAssignEmployees = (employees: any[]) => {
-    console.log("employees", employees);
+//   const handleAssignEmployees = (employees: any[]) => {
+//     console.log("employees", employees);
 
-    toast.current?.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Leads assigned",
-      life: 3000,
-    });
-  };
+//     toast.current?.show({
+//       severity: "success",
+//       summary: "Success",
+//       detail: "Leads assigned",
+//       life: 3000,
+//     });
+//   };
 
   const rightToolbarTemplate = () => {
     const selectionCount = selectedCustomers.length;
     return (
       <div className="flex gap-2">
         <Button
-          label="Add"
+          label="Update"
           icon="pi pi-plus"
           severity="success"
           disabled={selectionCount !== 1}
@@ -283,19 +283,14 @@ const AssignLeads: React.FC = () => {
       <Sidebar
         visible={assignSidebar}
         position="right"
-        header="Assign Employees"
+        header="Book Confirmation"
         onHide={() => setAssignSidebar(false)}
         style={{ width: "80vw" }}
       >
-        {leadDetails && (
-          <AssignLeadComponents
-            lead={leadDetails}
-            onAssign={handleAssignEmployees}
-          />
-        )}
+        {leadDetails && <BookConfirmationComponents />}
       </Sidebar>
     </div>
   );
 };
 
-export default AssignLeads;
+export default BookConfirmation;

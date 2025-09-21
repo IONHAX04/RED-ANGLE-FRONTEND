@@ -74,24 +74,6 @@ const UpdateLeads: React.FC<LeadDetailsProps> = ({ data }) => {
             placeholder="Brief overview of the interaction"
           />
         </div>
-        <div className="mt-3">
-          <p>Key Discussion Points</p>
-          <Editor
-            // value={formData.notes}
-            // onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-            style={{ height: "220px" }}
-            placeholder="Agenda Overview"
-          />
-        </div>
-        <div className="mt-3">
-          <p>Action Items or Outcomes</p>
-          <Editor
-            // value={formData.notes}
-            // onTextChange={(e) => handleChange("notes", e.htmlValue ?? "")}
-            style={{ height: "220px" }}
-            placeholder="Summary"
-          />
-        </div>
         <div className="buttonActions gap-3 flex mt-3 justify-end">
           <Button
             icon="pi pi-times"

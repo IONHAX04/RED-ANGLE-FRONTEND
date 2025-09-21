@@ -16,6 +16,7 @@ import LeaveRequest from "../pages/13-LeaveRequest/LeaveRequest";
 import EmployeeLeaveReq from "../components/10-EmployeesComponents/EmployeeLeaveReq/EmployeeLeaveReq";
 import Settings from "../pages/14-Settings/Settings";
 import BulkUpdateLeads from "../components/02-LeadsComponents/BulkUpdateLeads/BulkUpdateLeads";
+import BookConfirmation from "../pages/03-BookConfirmation/BookConfirmation";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -113,6 +114,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <AssignLeads />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* BOOK LEADS */}
+          <Route
+            path="/book/lead"
+            element={
+              <ProtectedRoute>
+                <BookConfirmation />
               </ProtectedRoute>
             }
           />
