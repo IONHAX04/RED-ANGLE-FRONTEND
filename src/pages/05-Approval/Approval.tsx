@@ -81,15 +81,40 @@ const Approval: React.FC = () => {
     setSidebarVisible(true);
   };
 
-  const handleSendToClient = () => {
+  const handleSendToClient = async () => {
     if (!selectedQuotation) return;
-    console.log("Sending quotation to client:", selectedQuotation);
-    toast.current?.show({
-      severity: "success",
-      summary: "Sent",
-      detail: `Quotation sent to ${selectedQuotation.full_name}`,
-      life: 3000,
-    });
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/quotation/send-to-client/${
+          selectedQuotation.lead_id
+        }`
+      );
+
+      if (res.data.success) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Sent",
+          detail: `Quotation sent to ${selectedQuotation.full_name}`,
+          life: 3000,
+        });
+      } else {
+        toast.current?.show({
+          severity: "warn",
+          summary: "Failed",
+          detail: res.data.message || "Could not send quotation",
+          life: 3000,
+        });
+      }
+    } catch (err) {
+      console.error("Error sending quotation:", err);
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to send quotation to client",
+        life: 3000,
+      });
+    }
   };
 
   const formatINR = (amount: number | string) => {
