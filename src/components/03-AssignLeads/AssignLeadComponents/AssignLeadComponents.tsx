@@ -33,9 +33,9 @@ export interface Employee {
 }
 
 const AssignLeadComponents: React.FC<{
-  lead: any;
+  leads: any;
   onAssign: (employees: Employee[]) => void;
-}> = ({ lead, onAssign }) => {
+}> = ({ leads, onAssign }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
@@ -73,9 +73,17 @@ const AssignLeadComponents: React.FC<{
 
   return (
     <div className="">
-      <h3 className="font-bold mb-3">
-        Assign employees to: {lead.firstName} {lead.lastName}
-      </h3>
+      <div className="mb-3">
+        <h3 className="font-bold mb-2">Assign employees to:</h3>
+        <ul className="list-disc ml-5">
+          {leads.map((lead) => (
+            <li key={lead.id}>
+              {lead.firstName} {lead.lastName} ({lead.email})
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <DataTable
         value={employees}
         dataKey="id"

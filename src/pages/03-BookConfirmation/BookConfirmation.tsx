@@ -183,7 +183,7 @@ const BookConfirmation: React.FC = () => {
     const fetchLeads = async () => {
       try {
         const res = await axios.get(
-          import.meta.env.VITE_API_URL + "/leads/getAll"
+          import.meta.env.VITE_API_URL + "/leads/assigned"
         );
         if (res.data.success) {
           // Map API data to Customer interface

@@ -76,7 +76,7 @@ const Packages: React.FC = () => {
             placeholder="53,999_to_1l"
             value={packageKey}
             onChange={(e) => setPackageKey(e.target.value)}
-            className="w-full"
+            className="w-full mt-2"
           />
         </div>
         <div className="flex-1">
@@ -85,7 +85,7 @@ const Packages: React.FC = () => {
             placeholder="53,999 - 1,00,000"
             value={priceRange}
             onChange={(e) => setPriceRange(e.target.value)}
-            className="w-full"
+            className="w-full mt-2"
           />
         </div>
         <div className="flex items-end">

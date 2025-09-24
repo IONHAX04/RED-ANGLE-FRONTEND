@@ -6,7 +6,9 @@ import { Column } from "primereact/column";
 import { FilterMatchMode } from "primereact/api";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
-import AssignLeadComponents from "./AssignLeadComponents/AssignLeadComponents";
+import AssignLeadComponents, {
+  type Employee,
+} from "./AssignLeadComponents/AssignLeadComponents";
 import { Toast } from "primereact/toast";
 import { Calendar } from "primereact/calendar";
 import { IconField } from "primereact/iconfield";
@@ -68,11 +70,11 @@ const AssignLeads: React.FC = () => {
     if (storedData) {
       try {
         const parsed: Customer[] = JSON.parse(storedData);
-        const updated = parsed.map((lead, index) => ({
+        const updated = parsed.map((lead) => ({
           ...lead,
-          id: index + 1,
           status: lead.status || "New",
         }));
+
         setCustomers(updated);
       } catch (err) {
         console.error("Error parsing leads:", err);
@@ -80,15 +82,47 @@ const AssignLeads: React.FC = () => {
     }
   }, []);
 
-  const handleAssignEmployees = (employees: any[]) => {
+  const handleAssignEmployees = async (employees: Employee[]) => {
     console.log("employees", employees);
+    console.log("selectedCustomers", selectedCustomers);
 
-    toast.current?.show({
-      severity: "success",
-      summary: "Success",
-      detail: "Leads assigned",
-      life: 3000,
-    });
+    try {
+      const leadIds = selectedCustomers.map((lead) => lead.id);
+      console.log("leadIds", leadIds);
+      const employeeIds = employees.map((emp) => emp.id);
+      console.log("employeeIds", employeeIds);
+
+      const res = await axios.post(
+        import.meta.env.VITE_API_URL + "/leads/assign",
+        { leadIds, employeeIds, assignedBy: "Admin" }
+      );
+
+      if (res.data.success) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Leads assigned successfully",
+          life: 3000,
+        });
+        setAssignSidebar(false); // Close sidebar
+        setSelectedCustomers([]); // Clear selection
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: res.data.message,
+          life: 3000,
+        });
+      }
+    } catch (err) {
+      console.error("Error assigning leads:", err);
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to assign leads",
+        life: 3000,
+      });
+    }
   };
 
   const rightToolbarTemplate = () => {
@@ -99,12 +133,10 @@ const AssignLeads: React.FC = () => {
           label="Add"
           icon="pi pi-plus"
           severity="success"
-          disabled={selectionCount !== 1}
+          disabled={selectedCustomers.length === 0}
           onClick={() => {
-            if (selectionCount === 1) {
-              setLeadDetails(selectedCustomers[0]);
-              setAssignSidebar(true);
-            }
+            setLeadDetails(null);
+            setAssignSidebar(true);
           }}
         />
       </div>
@@ -287,9 +319,9 @@ const AssignLeads: React.FC = () => {
         onHide={() => setAssignSidebar(false)}
         style={{ width: "80vw" }}
       >
-        {leadDetails && (
+        {selectedCustomers.length > 0 && (
           <AssignLeadComponents
-            lead={leadDetails}
+            leads={selectedCustomers}
             onAssign={handleAssignEmployees}
           />
         )}

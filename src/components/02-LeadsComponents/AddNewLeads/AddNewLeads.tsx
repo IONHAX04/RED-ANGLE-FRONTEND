@@ -60,6 +60,33 @@ const AddNewLeads: React.FC = () => {
   };
 
   const handleSave = async () => {
+    if (formData.budget) {
+      const budgetNum = Number(formData.budget);
+      const advanceNum = Number(formData.advance);
+
+      if (advanceNum > budgetNum) {
+        toast.current?.show({
+          severity: "warn",
+          summary: "Validation Error",
+          detail: `Advance cannot exceed budget (${budgetNum})`,
+          life: 3000,
+        });
+        return; // Stop further processing
+      }
+    }
+
+    if (
+      formData.eventDate &&
+      new Date(formData.eventDate) < new Date(new Date().setHours(0, 0, 0, 0))
+    ) {
+      toast.current?.show({
+        severity: "warn",
+        summary: "Validation Error",
+        detail: "Event date cannot be in the past",
+        life: 3000,
+      });
+      return;
+    }
     try {
       // Call your backend API
       const res = await axios.post(
@@ -318,6 +345,7 @@ const AddNewLeads: React.FC = () => {
                 className="p-inputtext-sm"
                 value={formData.eventDate}
                 onChange={(e) => handleChange("eventDate", e.value)}
+                minDate={new Date()}
               />
             </div>
           </div>
@@ -336,7 +364,22 @@ const AddNewLeads: React.FC = () => {
                 placeholder="Enter Advance"
                 className="p-inputtext-sm"
                 value={formData.advance}
-                onChange={(e) => handleChange("advance", e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (
+                    formData.budget &&
+                    Number(value) > Number(formData.budget)
+                  ) {
+                    toast.current?.show({
+                      severity: "warn",
+                      summary: "Validation Error",
+                      detail: `Advance cannot exceed budget (${formData.budget})`,
+                      life: 2000,
+                    });
+                    return;
+                  }
+                  handleChange("advance", value);
+                }}
               />
             </div>
             <div className="flex flex-1 flex-column gap-2">
