@@ -9,6 +9,7 @@ import { Divider } from "primereact/divider";
 import SubHeader from "../../Header/SubHeader/SubHeader";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddNewLeads: React.FC = () => {
   const navigate = useNavigate();
@@ -58,35 +59,43 @@ const AddNewLeads: React.FC = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
-      const existingLeads = JSON.parse(localStorage.getItem("leads") || "[]");
-      const updatedLeads = [...existingLeads, { ...formData, status: "New" }];
+      // Call your backend API
+      const res = await axios.post(
+        import.meta.env.VITE_API_URL + "/leads/addNew",
+        formData
+      );
 
-      localStorage.setItem("leads", JSON.stringify(updatedLeads));
+      if (res.data.success) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Lead added successfully",
+          life: 3000,
+        });
 
-      // ✅ Toast success
-      toast.current?.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Lead saved successfully!",
-        life: 2000,
-      });
+        handleClear(); // Clear form after success
 
-      // ✅ Clear form
-      handleClear();
-
-      // ✅ Navigate after short delay (so user sees toast)
-      setTimeout(() => {
-        navigate("/leads/view");
-      }, 2000);
-    } catch (error) {
-      console.error("Error saving to localStorage:", error);
+        // Navigate after short delay
+        setTimeout(() => {
+          navigate("/leads/view");
+        }, 1500);
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Failed",
+          detail: res.data.message || "Failed to add lead",
+          life: 3000,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error adding lead:", error);
 
       toast.current?.show({
         severity: "error",
         summary: "Error",
-        detail: "Failed to save lead.",
+        detail: "Internal server error",
         life: 3000,
       });
     }
