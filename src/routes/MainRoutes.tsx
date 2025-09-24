@@ -18,6 +18,7 @@ import Settings from "../pages/14-Settings/Settings";
 import BulkUpdateLeads from "../components/02-LeadsComponents/BulkUpdateLeads/BulkUpdateLeads";
 import BookConfirmation from "../pages/03-BookConfirmation/BookConfirmation";
 import Invoice from "../pages/04-Invoice/Invoice";
+import Approval from "../pages/05-Approval/Approval";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -145,6 +146,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Invoice />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* PPAROVAL */}
+          <Route
+            path="/approval/manager"
+            element={
+              <ProtectedRoute>
+                <Approval />
               </ProtectedRoute>
             }
           />
