@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TabView, TabPanel } from "primereact/tabview";
+import React, { useState, useRef } from "react";
+import { Steps } from "primereact/steps";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
@@ -8,6 +8,9 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Toast } from "primereact/toast";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface EventDetails {
   eventName: string;
@@ -23,8 +26,16 @@ interface PaymentDetails {
   notes: string;
 }
 
-const BookConfirmationComponents: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+interface BookConfirmationProps {
+  onClose: () => void;
+  leadId: number;
+}
+const BookConfirmationComponents: React.FC<BookConfirmationProps> = ({
+  onClose,
+  leadId,
+}) => {
+  const toast = useRef<Toast>(null);
+  const [activeStep, setActiveStep] = useState(0);
 
   // Event state
   const [eventDetails, setEventDetails] = useState<EventDetails>({
@@ -46,216 +57,286 @@ const BookConfirmationComponents: React.FC = () => {
   const [overallAmount, setOverallAmount] = useState(0);
   const [paidAmount, setPaidAmount] = useState(0);
 
-  // Handle Event Submit
-  const handleEventSubmit = () => {
-    setSubmittedEvents([...submittedEvents, eventDetails]);
-    setEventDetails({
-      eventName: "",
-      dateTime: null,
-      highlights: "",
-      notes: "",
+  const steps = [{ label: "Event Details" }, { label: "Payment Details" }];
+
+  // Validation functions using Toast
+  const showError = (message: string) => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Validation Error",
+      detail: message,
+      life: 3000,
     });
   };
 
-  // Handle Payment Submit
-  const handlePaymentSubmit = () => {
-    setTransactions([...transactions, paymentDetails]);
-    setPaidAmount(paidAmount + paymentDetails.amount);
-    setOverallAmount(overallAmount + paymentDetails.amount);
-    setPaymentDetails({
-      paymentType: "online",
-      amount: 0,
-      date: null,
-      notes: "",
-    });
+  const validateEventStep = (): boolean => {
+    if (!eventDetails.eventName) {
+      showError("Event Name is required");
+      return false;
+    }
+    if (!eventDetails.dateTime) {
+      showError("Event Date & Time is required");
+      return false;
+    }
+    return true;
+  };
+
+  const validatePaymentStep = (): boolean => {
+    if (!paymentDetails.amount || paymentDetails.amount <= 0) {
+      showError("Amount must be greater than 0");
+      return false;
+    }
+    if (!paymentDetails.date) {
+      showError("Payment Date is required");
+      return false;
+    }
+    return true;
+  };
+
+  const navigate = useNavigate();
+
+  const handleNext = async () => {
+    if (activeStep === 0) {
+      if (!validateEventStep()) return;
+      setSubmittedEvents([...submittedEvents, eventDetails]);
+      setActiveStep(1);
+    } else if (activeStep === 1) {
+      if (!validatePaymentStep()) return;
+
+      const finalPayload = {
+        leadId,
+        eventDetails,
+        paymentDetails,
+      };
+
+      try {
+        const res = await axios.post(
+          import.meta.env.VITE_API_URL + "/leads/bookEvent",
+          finalPayload
+        );
+
+        if (res.data.success) {
+          toast.current?.show({
+            severity: "success",
+            summary: "Success",
+            detail: "Event & Payment saved successfully",
+            life: 3000,
+          });
+
+          // reset form state
+          setEventDetails({
+            eventName: "",
+            dateTime: null,
+            highlights: "",
+            notes: "",
+          });
+          setPaymentDetails({
+            paymentType: "online",
+            amount: 0,
+            date: null,
+            notes: "",
+          });
+          setActiveStep(0);
+
+          setTimeout(() => {
+            onClose();
+          }, 1500);
+        } else {
+          toast.current?.show({
+            severity: "error",
+            summary: "Error",
+            detail: res.data.message || "Failed to save event",
+            life: 3000,
+          });
+        }
+      } catch (error: any) {
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Something went wrong while saving",
+          life: 3000,
+        });
+      }
+    }
+  };
+
+  const handlePrev = () => {
+    setActiveStep(activeStep - 1);
   };
 
   return (
-    <div className="">
-      <TabView
-        activeIndex={activeIndex}
-        onTabChange={(e) => setActiveIndex(e.index)}
-      >
-        {/* EVENT DETAILS TAB */}
-        <TabPanel header="Event Details">
-          <div className="gap-4 mb-4">
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <span className="p-float-label">
-                  <InputText
-                    className="w-full"
-                    value={eventDetails.eventName}
-                    onChange={(e) =>
-                      setEventDetails({
-                        ...eventDetails,
-                        eventName: e.target.value,
-                      })
-                    }
-                  />
-                  <label>Event Name</label>
-                </span>
-              </div>
-              <div className="flex-1">
-                <Calendar
+    <div className="p-4">
+      <Toast ref={toast} />
+      <Steps
+        model={steps}
+        activeIndex={activeStep}
+        readOnly={true}
+        className="mb-4"
+      />
+
+      {/* Step 1: Event Details */}
+      {activeStep === 0 && (
+        <div className="gap-4 mb-4">
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <span className="p-float-label">
+                <InputText
                   className="w-full"
-                  value={eventDetails.dateTime}
+                  value={eventDetails.eventName}
                   onChange={(e) =>
                     setEventDetails({
                       ...eventDetails,
-                      dateTime: e.value as Date,
+                      eventName: e.target.value,
                     })
                   }
-                  showTime
-                  hourFormat="12"
-                  placeholder="Select Date & Time"
                 />
-              </div>
-              <div className="flex-1"></div>
+                <label>Event Name</label>
+              </span>
             </div>
-
-            <div className="mt-3">
-              <p>Highlights</p>
-              <Editor
-                value={eventDetails.highlights}
-                onTextChange={(e) =>
+            <div className="flex-1">
+              <Calendar
+                className="w-full"
+                value={eventDetails.dateTime}
+                onChange={(e) =>
                   setEventDetails({
                     ...eventDetails,
-                    highlights: e.htmlValue || "",
+                    dateTime: e.value as Date,
                   })
                 }
-                style={{ height: "150px" }}
+                showTime
+                minDate={new Date()}
+                hourFormat="12"
+                placeholder="Select Date & Time"
               />
             </div>
+          </div>
 
-            <div className="mt-3">
-              <p>Notes</p>
-              <Editor
-                value={eventDetails.notes}
-                onTextChange={(e) =>
-                  setEventDetails({ ...eventDetails, notes: e.htmlValue || "" })
+          <div className="mt-3">
+            <p>Highlights</p>
+            <Editor
+              value={eventDetails.highlights}
+              onTextChange={(e) =>
+                setEventDetails({
+                  ...eventDetails,
+                  highlights: e.htmlValue || "",
+                })
+              }
+              style={{ height: "150px" }}
+            />
+          </div>
+
+          <div className="mt-3">
+            <p>Notes</p>
+            <Editor
+              value={eventDetails.notes}
+              onTextChange={(e) =>
+                setEventDetails({ ...eventDetails, notes: e.htmlValue || "" })
+              }
+              style={{ height: "150px" }}
+            />
+          </div>
+
+          <div className="flex justify-end mt-3 gap-2">
+            <Button
+              label="Next"
+              icon="pi pi-arrow-right"
+              onClick={handleNext}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Payment Details */}
+      {activeStep === 1 && (
+        <div className="gap-4 mb-4">
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <p className="mb-1">Payment Type</p>
+              <Dropdown
+                className="w-full"
+                value={paymentDetails.paymentType}
+                options={[
+                  { label: "Online", value: "online" },
+                  { label: "Offline", value: "offline" },
+                ]}
+                onChange={(e) =>
+                  setPaymentDetails({ ...paymentDetails, paymentType: e.value })
                 }
-                style={{ height: "150px" }}
               />
             </div>
-
-            <div className="flex justify-end mt-3">
-              <Button
-                label="Submit"
-                icon="pi pi-check"
-                severity="success"
-                onClick={handleEventSubmit}
-              />
-            </div>
-          </div>
-
-          {/* Display Submitted Event Details */}
-          <div className="gap-4">
-            {submittedEvents.map((event, idx) => (
-              <Card
-                key={idx}
-                title={event.eventName}
-                subTitle={event.dateTime?.toString()}
-              >
-                <div dangerouslySetInnerHTML={{ __html: event.highlights }} />
-                <div dangerouslySetInnerHTML={{ __html: event.notes }} />
-              </Card>
-            ))}
-          </div>
-        </TabPanel>
-
-        {/* PAYMENT DETAILS TAB */}
-        <TabPanel header="Payment Details">
-          <div className="gap-4 mb-4">
-            {/* Row 1 */}
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <p className="mb-1">Payment Type</p>
-                <Dropdown
-                  className="w-full"
-                  value={paymentDetails.paymentType}
-                  options={[
-                    { label: "Online", value: "online" },
-                    { label: "Offline", value: "offline" },
-                  ]}
-                  onChange={(e) =>
-                    setPaymentDetails({
-                      ...paymentDetails,
-                      paymentType: e.value,
-                    })
-                  }
-                  placeholder="Select Payment Type"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="mb-1">Amount</p>
-                <InputText
-                  className="w-full"
-                  type="number"
-                  placeholder="Enter Amount"
-                  value={paymentDetails.amount}
-                  onChange={(e) =>
-                    setPaymentDetails({
-                      ...paymentDetails,
-                      amount: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="flex-1">
-                <p className="mb-1">Payment Date</p>
-                <Calendar
-                  className="w-full"
-                  value={paymentDetails.date}
-                  onChange={(e) =>
-                    setPaymentDetails({
-                      ...paymentDetails,
-                      date: e.value as Date,
-                    })
-                  }
-                  placeholder="Select Payment Date"
-                />
-              </div>
-            </div>
-
-            {/* Row 2 */}
-            <div className="mt-3">
-              <p className="mb-1">Notes</p>
+            <div className="flex-1">
+              <p className="mb-1">Amount</p>
               <InputText
                 className="w-full"
-                placeholder="Enter Notes"
-                value={paymentDetails.notes}
+                type="number"
+                value={paymentDetails.amount}
                 onChange={(e) =>
                   setPaymentDetails({
                     ...paymentDetails,
-                    notes: e.target.value,
+                    amount: Number(e.target.value),
                   })
                 }
               />
             </div>
-
-            {/* Submit */}
-            <div className="flex justify-end mt-3">
-              <Button
-                label="Submit"
-                icon="pi pi-check"
-                severity="success"
-                onClick={handlePaymentSubmit}
+            <div className="flex-1">
+              <p className="mb-1">Payment Date</p>
+              <Calendar
+                className="w-full"
+                value={paymentDetails.date}
+                onChange={(e) =>
+                  setPaymentDetails({
+                    ...paymentDetails,
+                    date: e.value as Date,
+                  })
+                }
               />
             </div>
           </div>
 
+          <div className="mt-3">
+            <p className="mb-1">Notes</p>
+            <InputText
+              className="w-full"
+              value={paymentDetails.notes}
+              onChange={(e) =>
+                setPaymentDetails({ ...paymentDetails, notes: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="flex justify-between mt-3 gap-2">
+            <Button
+              label="Previous"
+              icon="pi pi-arrow-left"
+              onClick={handlePrev}
+              severity="secondary"
+            />
+            <Button
+              label="Submit"
+              icon="pi pi-check"
+              onClick={handleNext}
+              severity="success"
+            />
+          </div>
+
           {/* Stats */}
-          <div className="flex gap-4 mb-4">
+          {/* <div className="flex gap-4 mt-4">
             <Card className="flex-1" title="Overall Amount">
               <h2 className="text-2xl font-semibold">{overallAmount}</h2>
             </Card>
             <Card className="flex-1" title="Paid Amount">
               <h2 className="text-2xl font-semibold">{paidAmount}</h2>
             </Card>
-          </div>
+          </div> */}
 
-          {/* Transactions DataTable */}
-          <DataTable value={transactions} paginator rows={5} showGridlines>
+          {/* Transactions Table */}
+          {/* <DataTable
+            value={transactions}
+            paginator
+            rows={5}
+            showGridlines
+            className="mt-3"
+          >
             <Column field="paymentType" header="Payment Type" />
             <Column field="amount" header="Amount" />
             <Column
@@ -264,9 +345,9 @@ const BookConfirmationComponents: React.FC = () => {
               body={(row) => row.date?.toLocaleDateString()}
             />
             <Column field="notes" header="Notes" />
-          </DataTable>
-        </TabPanel>
-      </TabView>
+          </DataTable> */}
+        </div>
+      )}
     </div>
   );
 };

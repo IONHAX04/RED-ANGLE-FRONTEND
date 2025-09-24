@@ -80,16 +80,16 @@ const BookConfirmation: React.FC = () => {
     }
   }, []);
 
-//   const handleAssignEmployees = (employees: any[]) => {
-//     console.log("employees", employees);
+  //   const handleAssignEmployees = (employees: any[]) => {
+  //     console.log("employees", employees);
 
-//     toast.current?.show({
-//       severity: "success",
-//       summary: "Success",
-//       detail: "Leads assigned",
-//       life: 3000,
-//     });
-//   };
+  //     toast.current?.show({
+  //       severity: "success",
+  //       summary: "Success",
+  //       detail: "Leads assigned",
+  //       life: 3000,
+  //     });
+  //   };
 
   const rightToolbarTemplate = () => {
     const selectionCount = selectedCustomers.length;
@@ -179,39 +179,39 @@ const BookConfirmation: React.FC = () => {
   );
 
   // Fetch leads from backend API
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const res = await axios.get(
-          import.meta.env.VITE_API_URL + "/leads/assigned"
-        );
-        if (res.data.success) {
-          // Map API data to Customer interface
-          const data = res.data.data.map((lead: any) => ({
-            id: lead.id,
-            firstName: lead.full_name.split(" ")[0] || "",
-            lastName: lead.full_name.split(" ").slice(1).join(" ") || "",
-            email: lead.email,
-            mobile: lead.phone_number,
-            eventType: lead.wedding_type,
-            leadSource: lead.lead_source || "Other",
-            budget: lead.package || undefined,
-            notes: lead.notes || "",
-            status: lead.status || "New",
-            country: lead.country || "",
-            doorNo: lead.door_no || "",
-            street: lead.street || "",
-            city: lead.city || "",
-            state: lead.state || "",
-          }));
-          setCustomers(data);
-          console.log("data", data);
-        }
-      } catch (err) {
-        console.error("Error fetching leads:", err);
-      }
-    };
 
+  const fetchLeads = async () => {
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_API_URL + "/leads/assigned"
+      );
+      if (res.data.success) {
+        // Map API data to Customer interface
+        const data = res.data.data.map((lead: any) => ({
+          id: lead.id,
+          firstName: lead.full_name.split(" ")[0] || "",
+          lastName: lead.full_name.split(" ").slice(1).join(" ") || "",
+          email: lead.email,
+          mobile: lead.phone_number,
+          eventType: lead.wedding_type,
+          leadSource: lead.lead_source || "Other",
+          budget: lead.package || undefined,
+          notes: lead.notes || "",
+          status: lead.status || "New",
+          country: lead.country || "",
+          doorNo: lead.door_no || "",
+          street: lead.street || "",
+          city: lead.city || "",
+          state: lead.state || "",
+        }));
+        setCustomers(data);
+        console.log("data", data);
+      }
+    } catch (err) {
+      console.error("Error fetching leads:", err);
+    }
+  };
+  useEffect(() => {
     fetchLeads();
   }, []);
 
@@ -219,7 +219,7 @@ const BookConfirmation: React.FC = () => {
     <div>
       <Toast ref={toast} />
       <SubHeader
-        title="Assign Leads"
+        title="Book Leads"
         subtitle={new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "short",
@@ -287,7 +287,15 @@ const BookConfirmation: React.FC = () => {
         onHide={() => setAssignSidebar(false)}
         style={{ width: "80vw" }}
       >
-        {leadDetails && <BookConfirmationComponents />}
+        {leadDetails && (
+          <BookConfirmationComponents
+            onClose={() => {
+              fetchLeads();
+              setAssignSidebar(false);
+            }}
+            leadId={leadDetails.id} // 👈 pass leadId here
+          />
+        )}
       </Sidebar>
     </div>
   );
