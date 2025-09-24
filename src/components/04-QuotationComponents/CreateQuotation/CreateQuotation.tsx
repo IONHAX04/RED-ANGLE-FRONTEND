@@ -3,16 +3,26 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Toast } from "primereact/toast";
+import { useRef } from "react";
+import axios from "axios";
 
 interface Package {
   id: number;
   serviceName: string;
   description: string;
-  quantity: string;
-  price: string;
+  quantity: number | string;
+  price: number | string;
 }
 
-const CreateQuotation: React.FC = () => {
+interface CreateQuotationProps {
+  lead: any;
+  onClose: () => void;
+}
+
+const CreateQuotation: React.FC<CreateQuotationProps> = ({ lead, onClose }) => {
+  const toast = useRef<Toast>(null);
+
   const [packages, setPackages] = useState<Package[]>([]);
   const [form, setForm] = useState<Package>({
     id: Date.now(),
@@ -56,24 +66,103 @@ const CreateQuotation: React.FC = () => {
     setPackages(packages.filter((p) => p.id !== pkg.id)); // remove temporarily
   };
 
-  const handleCreatePackage = () => {
-    console.log("Final Packages:", packages);
-    alert("Packages created! Check console.");
+  const handleCreateQuotation = async () => {
+    const payload = {
+      leadId: lead.leadId,
+      eventId: lead.eventId,
+      packages: packages.map((pkg) => ({
+        serviceName: pkg.serviceName,
+        description: pkg.description,
+        quantity: pkg.quantity,
+        price: pkg.price,
+      })),
+    };
+
+    console.log("Quotation Payload:", payload);
+
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_API_URL + "/leads/quotationPackages",
+        payload
+      );
+
+      if (res.data.success) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Quotation packages saved successfully",
+          life: 3000,
+        });
+        onClose(); // close sidebar
+      } else {
+        toast.current?.show({
+          severity: "error",
+          summary: "Error",
+          detail: res.data.message || "Failed to save packages",
+          life: 3000,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to save quotation packages",
+        life: 3000,
+      });
+    }
   };
 
   return (
     <div className="p-3">
-      {/* Add New Package */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Create Quotation</h2>
-        <Button
-          label="Add Another Package"
-          icon="pi pi-plus"
-          onClick={handleAdd}
-        />
+      {/* Lead / Event Details */}
+      <div className="mb-4 border p-3 rounded-lg shadow-sm">
+        <h2 className="text-lg font-bold mb-2">Lead & Event Details</h2>
+        <table className="table-auto w-full text-sm">
+          <tbody>
+            <tr>
+              <td className="font-semibold">Name:</td>
+              <td>
+                {lead.firstName} {lead.lastName}
+              </td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Email:</td>
+              <td>{lead.email}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Mobile:</td>
+              <td>{lead.mobile}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Event Type:</td>
+              <td>{lead.eventType}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Wedding Location:</td>
+              <td>{lead.weddingLocation}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Event Name:</td>
+              <td>{lead.eventName}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Event Date:</td>
+              <td>{new Date(lead.eventDateTime).toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Payment Amount:</td>
+              <td>{lead.paymentAmount}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold">Payment Type:</td>
+              <td>{lead.paymentType}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      {/* Input Row */}
+      {/* Package Form */}
       <div className="flex gap-3 mb-4">
         <InputText
           placeholder="Service Name"
@@ -101,15 +190,16 @@ const CreateQuotation: React.FC = () => {
           value={form.price}
           onChange={(e) => handleChange(e, "price")}
         />
+        <Button label="Add" icon="pi pi-plus" onClick={handleAdd} />
       </div>
 
-      {/* DataTable */}
+      {/* Packages Table */}
       <DataTable
         value={packages}
         paginator
+        rows={5}
         showGridlines
         scrollable
-        rows={5}
         className="shadow-md rounded-lg"
       >
         <Column field="serviceName" header="Service Name" />
@@ -138,13 +228,13 @@ const CreateQuotation: React.FC = () => {
         />
       </DataTable>
 
-      {/* Bottom Button */}
-      <div className="flex justify-end mt-6">
+      {/* Submit */}
+      <div className="flex justify-end mt-4">
         <Button
-          label="Create Package"
+          label="Create Quotation"
           icon="pi pi-check"
           severity="success"
-          onClick={handleCreatePackage}
+          onClick={handleCreateQuotation}
         />
       </div>
     </div>

@@ -17,6 +17,7 @@ import EmployeeLeaveReq from "../components/10-EmployeesComponents/EmployeeLeave
 import Settings from "../pages/14-Settings/Settings";
 import BulkUpdateLeads from "../components/02-LeadsComponents/BulkUpdateLeads/BulkUpdateLeads";
 import BookConfirmation from "../pages/03-BookConfirmation/BookConfirmation";
+import Invoice from "../pages/04-Invoice/Invoice";
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -134,6 +135,16 @@ const MainRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <AddQuotation />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* INVOCIE */}
+          <Route
+            path="/invoice/overall"
+            element={
+              <ProtectedRoute>
+                <Invoice />
               </ProtectedRoute>
             }
           />
