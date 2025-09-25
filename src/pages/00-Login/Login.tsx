@@ -6,7 +6,7 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { loginUser } from "./Login.function";
 
-import BgImg from "../../assets/login/loginImg.jpg";
+import BgImg from "../../assets/login/banner.jpg";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
         className="rounded-[56px] p-[0.3rem] w-full max-w-2xl"
         style={{
           background:
-            "linear-gradient(180deg, #047f94 10%, rgba(33, 150, 243, 0) 30%)",
+            "linear-gradient(180deg, #ab7000 10%, rgba(33, 150, 243, 0) 30%)",
         }}
       >
         <div className="w-full rounded-[53px] bg-white/20 backdrop-blur-lg py-20 px-6 sm:px-8 shadow-lg">

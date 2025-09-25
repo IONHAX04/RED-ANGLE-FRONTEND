@@ -4,27 +4,18 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import React, { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
-import { addLeaveRequest, updateLeaveRequest } from "./RequestLeave.function";
+import { addLeaveRequest } from "./RequestLeave.function";
 
-const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
-  initialData,
+const RequestLeave: React.FC<{ userId?: number; onSuccess?: () => void }> = ({
+  userId,
   onSuccess,
 }) => {
-  const [leaveType, setLeaveType] = useState<string | null>(
-    initialData?.leaveType || null
-  );
-  const [fromDate, setFromDate] = useState<Date | null>(
-    initialData?.fromDate || null
-  );
-  const [toDate, setToDate] = useState<Date | null>(
-    initialData?.toDate || null
-  );
-  const [description, setDescription] = useState(
-    initialData?.description || ""
-  );
+  const [leaveType, setLeaveType] = useState<string | null>(null);
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [description, setDescription] = useState("");
 
   const toast = useRef<Toast>(null);
-  const isEditMode = !!initialData;
 
   const leaveOptions = [
     { label: "Sick Leave", value: "sick" },
@@ -45,7 +36,6 @@ const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
     return true;
   };
 
-  // 👉 Clear form after successful save
   const handleClear = () => {
     setLeaveType(null);
     setFromDate(null);
@@ -63,29 +53,19 @@ const RequestLeave: React.FC<{ initialData?: any; onSuccess?: () => void }> = ({
         fromDate,
         toDate,
         description,
-        employeeId: 1, // TODO: get from logged-in user
+        employeeId: userId, // 👈 now passed from props
       };
 
-      let result;
-      if (isEditMode) {
-        result = await updateLeaveRequest(initialData.id, payload);
-      } else {
-        result = await addLeaveRequest(payload);
-      }
+      const result = await addLeaveRequest(payload);
 
       if (result.success) {
         toast.current?.show({
           severity: "success",
           summary: "Success",
-          detail: isEditMode
-            ? "Leave updated successfully!"
-            : "Leave requested successfully!",
+          detail: "Leave requested successfully!",
         });
 
-        if (!isEditMode) {
-          handleClear(); // 👈 reset form if it’s a new leave request
-        }
-
+        handleClear(); // reset form
         if (onSuccess) {
           setTimeout(() => onSuccess(), 500);
         }

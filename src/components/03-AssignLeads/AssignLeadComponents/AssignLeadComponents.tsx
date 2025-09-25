@@ -76,7 +76,7 @@ const AssignLeadComponents: React.FC<{
       <div className="mb-3">
         <h3 className="font-bold mb-2">Assign employees to:</h3>
         <ul className="list-disc ml-5">
-          {leads.map((lead) => (
+          {leads.map((lead:any) => (
             <li key={lead.id}>
               {lead.firstName} {lead.lastName} ({lead.email})
             </li>

@@ -16,8 +16,8 @@ import {
   FileCheck2,
   ClipboardCheck,
   ShieldCheck,
-  BarChart3,
-  PieChart,
+  // BarChart3,
+  // PieChart,
   IdCard,
   ClipboardList,
   UserCog,
@@ -135,22 +135,22 @@ const menuItems: MenuItem[] = [
     ],
   },
 
-  {
-    label: "Reports",
-    icon: <BarChart3 size={18} />,
-    subItems: [
-      {
-        label: "Overall Reports",
-        icon: <FileText size={18} />,
-        route: "/reports/overall",
-      },
-      {
-        label: "Metrics",
-        icon: <PieChart size={18} />,
-        route: "/reports/metrics",
-      },
-    ],
-  },
+  // {
+  //   label: "Reports",
+  //   icon: <BarChart3 size={18} />,
+  //   subItems: [
+  //     {
+  //       label: "Overall Reports",
+  //       icon: <FileText size={18} />,
+  //       route: "/reports/overall",
+  //     },
+  //     {
+  //       label: "Metrics",
+  //       icon: <PieChart size={18} />,
+  //       route: "/reports/metrics",
+  //     },
+  //   ],
+  // },
 
   {
     label: "Employees",

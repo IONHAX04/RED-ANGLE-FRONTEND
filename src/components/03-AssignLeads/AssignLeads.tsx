@@ -39,6 +39,7 @@ const AssignLeads: React.FC = () => {
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [assignSidebar, setAssignSidebar] = useState(false);
   const [leadDetails, setLeadDetails] = useState<Customer | null>(null);
+  console.log("leadDetails", leadDetails);
   const toast = useRef<Toast>(null);
 
   const onGlobalFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +128,7 @@ const AssignLeads: React.FC = () => {
 
   const rightToolbarTemplate = () => {
     const selectionCount = selectedCustomers.length;
+    console.log("selectionCount", selectionCount);
     return (
       <div className="flex gap-2">
         <Button

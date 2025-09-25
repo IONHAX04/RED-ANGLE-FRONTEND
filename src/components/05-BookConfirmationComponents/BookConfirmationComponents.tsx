@@ -5,9 +5,6 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { Editor } from "primereact/editor";
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +18,7 @@ interface EventDetails {
 
 interface PaymentDetails {
   paymentType: "online" | "offline";
-  amount: number;
+  amount: any;
   date: Date | null;
   notes: string;
 }
@@ -49,13 +46,10 @@ const BookConfirmationComponents: React.FC<BookConfirmationProps> = ({
   // Payment state
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
     paymentType: "online",
-    amount: 0,
+    amount:"",
     date: null,
     notes: "",
   });
-  const [transactions, setTransactions] = useState<PaymentDetails[]>([]);
-  const [overallAmount, setOverallAmount] = useState(0);
-  const [paidAmount, setPaidAmount] = useState(0);
 
   const steps = [{ label: "Event Details" }, { label: "Payment Details" }];
 
@@ -94,6 +88,7 @@ const BookConfirmationComponents: React.FC<BookConfirmationProps> = ({
   };
 
   const navigate = useNavigate();
+  console.log('navigate', navigate)
 
   const handleNext = async () => {
     if (activeStep === 0) {

@@ -163,7 +163,10 @@ const OverallEmployeeAttendance: React.FC = () => {
           scrollable
         >
           <Column field="id" header="S.No" />
-          <Column field="name" header="Employee Name" />
+          <Column
+            header="Employee Name"
+            body={(rowData) => `${rowData.firstName} ${rowData.lastName}`}
+          />
           <Column field="date" header="Date" />
           <Column field="punch_in_time" header="Punch In" />
           <Column field="punch_out_time" header="Punch Out" />

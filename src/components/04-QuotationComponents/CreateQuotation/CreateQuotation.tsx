@@ -11,8 +11,8 @@ interface Package {
   id: number;
   serviceName: string;
   description: string;
-  quantity: number | string;
-  price: number | string;
+  quantity: any;
+  price: any;
 }
 
 interface CreateQuotationProps {

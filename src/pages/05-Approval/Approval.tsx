@@ -141,7 +141,7 @@ const Approval: React.FC = () => {
           showGridlines
           selectionMode="single"
           selection={selectedQuotation}
-          onSelectionChange={(e) => handleRowSelect(e.value)}
+          onSelectionChange={(e) => handleRowSelect(e.target.value)}
           emptyMessage="No quotations found."
         >
           <Column selectionMode="single" headerStyle={{ width: "3rem" }} />

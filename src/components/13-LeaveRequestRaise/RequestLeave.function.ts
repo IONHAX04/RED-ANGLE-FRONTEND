@@ -6,15 +6,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Add new request (leave/permission)
 export const addLeaveRequest = async (requestData: any) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/request`,
-      requestData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(`${API_URL}/request`, requestData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error: any) {
     const message =
@@ -28,9 +24,10 @@ export const updateLeaveRequest = async (
   id: number,
   requestData: Partial<any>
 ) => {
+  console.log("id", id);
   try {
     const response = await axios.put(
-      `${API_URL}/request/leaveReq/${id}`,
+      `${API_URL}/request/${requestData.employeeId}`,
       requestData
     );
     return response.data;
@@ -56,9 +53,7 @@ export const fetchLeaveRequests = async () => {
 // Delete request
 export const deleteLeaveRequest = async (id: number) => {
   try {
-    const response = await axios.delete(
-      `${API_URL}/request/leaveReq/${id}`
-    );
+    const response = await axios.delete(`${API_URL}/request/leaveReq/${id}`);
     return response.data;
   } catch (error: any) {
     throw new Error(

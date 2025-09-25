@@ -129,9 +129,7 @@ const LeaveRequest: React.FC = () => {
         header="Request Leave"
         onHide={() => setRequestLeave(false)}
       >
-        {userId && (
-          <RequestLeave onSuccess={fetchRequests} initialData={userId} />
-        )}
+        {userId && <RequestLeave onSuccess={fetchRequests} />}
       </Sidebar>
     </div>
   );

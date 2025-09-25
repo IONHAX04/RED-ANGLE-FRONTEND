@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import React, { useState, useRef } from "react";
-import { addLeaveRequest, updateLeaveRequest } from "./RequestLeave.function";
+import { addLeaveRequest } from "./RequestLeave.function";
 
 const RequestPermission: React.FC<{
   initialData?: any;
@@ -110,12 +110,11 @@ const RequestPermission: React.FC<{
         employeeId: 1, // TODO: get from logged-in user/session
       };
 
-      let result;
-      if (isEditMode) {
-        result = await updateLeaveRequest(initialData.id, payload);
-      } else {
-        result = await addLeaveRequest(payload);
-      }
+      // if (isEditMode) {
+      //   result = await updateLeaveRequest(initialData.id, payload);
+      // } else {
+      const result = await addLeaveRequest(payload);
+      // }
 
       if (result.success) {
         toast.current?.show({
