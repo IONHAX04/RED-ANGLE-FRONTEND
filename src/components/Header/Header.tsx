@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 
 import "./Header.css";
+import { Divider } from "primereact/divider";
 
 interface SubMenuItem {
   label: string;
@@ -296,7 +297,7 @@ const Header = ({ children }: NavProps) => {
                     {hasSub && (
                       <ul
                         className={`overflow-hidden transition-all duration-300 pl-4 ${
-                          isOpen ? "max-h-40 mt-1" : "max-h-0"
+                          isOpen ? "mt-1" : "max-h-0"
                         }`}
                       >
                         {item.subItems!.map((subItem, subIndex) => (
@@ -315,6 +316,7 @@ const Header = ({ children }: NavProps) => {
                               </span>
                               <Ripple />
                             </Link>
+                            <Divider className="m-0" />
                           </li>
                         ))}
                       </ul>

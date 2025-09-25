@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="w-full">
       <SubHeader
-        title="Add New Leads"
+        title="Dashboard"
         subtitle={new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "short",

@@ -37,7 +37,6 @@ interface Customer {
   street: string;
 }
 
-
 const ViewLeads: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
@@ -96,7 +95,19 @@ const ViewLeads: React.FC = () => {
         }}
       />
       <Button
-        label="Update"
+        label="Update Events"
+        icon="pi pi-refresh"
+        severity="warning"
+        disabled={!isSingleSelected}
+        onClick={() => {
+          if (isSingleSelected) {
+            setLeadDetails(selectedCustomers[0]);
+            setUpdateLeadDetailsSidebar(true);
+          }
+        }}
+      />
+      <Button
+        label="Update Lead Details"
         icon="pi pi-refresh"
         severity="warning"
         disabled={!isSingleSelected}
