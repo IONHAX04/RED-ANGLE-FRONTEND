@@ -284,7 +284,7 @@ const Header = ({ children }: NavProps) => {
                         to={item.route!}
                         className={`flex items-center gap-2 px-3 py-2 rounded w-full transition-colors duration-150 ${
                           isActive(item.route)
-                            ? "bg-[#3B82F6] text-white"
+                            ? "bg-[#00052e] text-white"
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
@@ -305,7 +305,7 @@ const Header = ({ children }: NavProps) => {
                               to={subItem.route!}
                               className={`flex items-center gap-2 px-3 py-1 rounded w-full transition-colors duration-150 ${
                                 isActive(subItem.route)
-                                  ? "bg-[#3B82F6] text-white"
+                                  ? "bg-[#00052e] text-white"
                                   : "text-gray-700 hover:bg-gray-100"
                               }`}
                             >
@@ -337,7 +337,6 @@ const Header = ({ children }: NavProps) => {
               <Avatar image={userInfo.avatar} shape="circle" />
               <span className="font-semibold">{userInfo.name}</span>
             </div>
-
 
             {/* Logout Button */}
             <div
